@@ -7,14 +7,88 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainFragment">
 
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MainFragment"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_poster"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/img_height_400"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@color/black"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_16"
+        android:textSize="@dimen/text_size_24"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/img_poster"
+        app:layout_constraintTop_toBottomOf="@+id/img_poster"
+        tools:text="@string/movie_title" />
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/rating_bar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_148"
+        android:layout_marginTop="@dimen/margin_12"
+        app:layout_constraintEnd_toStartOf="@+id/text_rating"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_8"
+        android:layout_marginEnd="@dimen/margin_148"
+        android:textSize="@dimen/text_size_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"
+        tools:text="@string/rating_10" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_about"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_8"
+        android:layout_marginTop="@dimen/margin_16"
+        android:textSize="@dimen/text_size_16"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/img_poster"
+        app:layout_constraintTop_toBottomOf="@+id/rating_bar"
+        android:text="@string/about" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_8"
+        android:textSize="@dimen/text_size_16"
+        app:layout_constraintStart_toStartOf="@+id/img_poster"
+        app:layout_constraintTop_toBottomOf="@+id/text_about"
+        tools:text="@string/movie_details" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/img_poster"
+        app:layout_constraintTop_toTopOf="@+id/img_poster"
+        tools:visibility="visible"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:constraint_referenced_ids="img_poster,text_title,rating_bar,text_rating,text_about,text_details"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
