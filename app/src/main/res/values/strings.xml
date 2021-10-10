@@ -4,4 +4,7 @@
     <string name="rating_10">10</string>
     <string name="movie_details">Some movie details</string>
     <string name="about">About:</string>
+    <string name="error">Loading error!</string>
+    <string name="reload">Try again!</string>
+    <string name="genres">Genres:</string>
 </resources>
