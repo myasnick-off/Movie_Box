@@ -22,7 +22,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
             sleep(1000)
             // рандомизатор загрузки данных
             when(Math.random().roundToInt()) {
-                1 -> liveData.postValue(AppState.Success(repository.getMovieListFromLocal()))
+                1 -> liveData.postValue(AppState.Success(repository.getCategoryListFromLocal()))
                 0 -> liveData.postValue(AppState.Error(Throwable()))
             }
         }.start()

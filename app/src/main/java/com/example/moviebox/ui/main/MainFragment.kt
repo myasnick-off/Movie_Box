@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.moviebox.AppState
 import com.example.moviebox.R
 import com.example.moviebox.databinding.MainFragmentBinding
@@ -66,9 +67,11 @@ class MainFragment : Fragment() {
         when (appState) {
             is AppState.Success -> {
                 mainProgressBar.visibility = View.GONE
-                mainRecycler.layoutManager = GridLayoutManager(context, 2)
+                mainRecycler
+                    .layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
                 adapter = MainFragmentAdapter(onMovieItemClickListener).apply {
-                    setMovieList(appState.movieData)
+                    setData(appState.categoryData)
                 }
                 mainRecycler.adapter = adapter
             }
@@ -84,7 +87,6 @@ class MainFragment : Fragment() {
             }
         }
     }
-
 
     interface OnItemViewClickListener {
         fun onItemClicked(movie: Movie)
