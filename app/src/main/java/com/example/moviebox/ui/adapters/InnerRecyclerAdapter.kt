@@ -12,7 +12,7 @@ import com.example.moviebox.ui.main.MainFragment
 class InnerRecyclerAdapter(private val itemViewClickListener: MainFragment.OnItemViewClickListener) :
     RecyclerView.Adapter<InnerRecyclerAdapter.InnerViewHolder>() {
 
-    private var movieList: List<Movie> = listOf()
+    private var movieList: List<Movie> = emptyList()
     private lateinit var binding: InnerRecyclerItemBinding
 
     fun setData(data: List<Movie>) {

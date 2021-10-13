@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.moviebox.databinding.DetailsFragmentBinding
+import com.example.moviebox.di.hide
+import com.example.moviebox.di.show
 import com.example.moviebox.model.entities.Movie
 
 class DetailsFragment : Fragment() {
@@ -25,8 +27,7 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val movie = arguments?.getParcelable<Movie>(KEY_BUNDLE)
-        movie?.let { setData(movie) }
+        arguments?.getParcelable<Movie>(KEY_BUNDLE)?.let { movie -> setData(movie) }
     }
 
     override fun onDestroyView() {
@@ -37,21 +38,21 @@ class DetailsFragment : Fragment() {
     private fun setData(movieData: Movie) = with(binding) {
         textTitle.text = movieData.title
         textRating.text = movieData.rating_imdb.toString()
-        textGenresList.text = movieData.genres.toString()
+        textGenresList.text = movieData.genres.toString().removeSurrounding("[", "]")
+        textDirectorName.text = movieData.directors.toString().removeSurrounding("[", "]")
         textDetails.text = movieData.description
-        detailsGroup.visibility = View.VISIBLE
-        detailsProgressBar.visibility = View.GONE
+        ratingBar.rating = movieData.rating_imdb.toFloat()/2
         // загрузка картинки из Интернета по ее url
         Glide.with(root).load(movieData.poster).into(imgPoster)
+        detailsGroup.show()
+        detailsProgressBar.hide()
     }
 
     companion object {
         const val KEY_BUNDLE = "movie_data"
 
         fun newInstance(bundle: Bundle): DetailsFragment {
-            val fragment = DetailsFragment()
-            fragment.arguments = bundle
-            return fragment
+            return DetailsFragment().apply { arguments = bundle }
         }
     }
 }

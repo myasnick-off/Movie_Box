@@ -4,43 +4,15 @@ import com.example.moviebox.model.entities.*
 
 class RepositoryImpl : Repository {
 
-    override fun getMovieDataFromLocal(): Movie = getDefaultLatest()
+    override fun getMovieDataFromLocal(): Movie = Movie.getDefaultLatest()
 
-    override fun getMovieListFromLocal() = listOf(
-        getDefaultLatest(),
-        getDefaultLatest(),
-        getDefaultLatest(),
-        getDefaultLatest(),
-        getDefaultLatest(),
-        getDefaultLatest(),
-        getDefaultLatest(),
-        getDefaultLatest()
-    )
+    override fun getMovieListFromLocal() = Movie.getDefaultMovieList(8, CategoryName.LATEST)
 
-    override fun getCategoryListFromLocal() = listOf(
-        Category(CategoryName.LATEST, listOf(
-            getDefaultLatest(), getDefaultLatest(), getDefaultLatest(), getDefaultLatest(),
-            getDefaultLatest(), getDefaultLatest(), getDefaultLatest(), getDefaultLatest()
-        )),
+    override fun getCategoryListFromLocal() = Category.getDefaultCategoryList()
 
-        Category(CategoryName.THRILLER, listOf(
-            getDefaultThriller(), getDefaultThriller(), getDefaultThriller(), getDefaultThriller(),
-            getDefaultThriller(), getDefaultThriller(), getDefaultThriller(), getDefaultThriller()
-        )),
+    override fun getMovieDataFromServer() = Movie.getDefaultLatest()
 
-        Category(CategoryName.COMEDY, listOf(
-            getDefaultComedy(), getDefaultComedy(), getDefaultComedy(), getDefaultComedy(),
-            getDefaultComedy(), getDefaultComedy(), getDefaultComedy(), getDefaultComedy()
-        )),
-    )
+    override fun getMovieListFromServer() = Movie.getDefaultMovieList(8, CategoryName.LATEST)
 
-    override fun getMovieDataFromServer(): Movie = getDefaultLatest()
-
-    override fun getMovieListFromServer() = listOf(getDefaultLatest())
-
-    override fun getCategoryListServer() = listOf(
-        Category(CategoryName.LATEST, listOf(
-            getDefaultLatest(), getDefaultLatest(), getDefaultLatest(), getDefaultLatest(),
-            getDefaultLatest(), getDefaultLatest(), getDefaultLatest(), getDefaultLatest()
-        )))
+    override fun getCategoryListServer() = Category.getDefaultCategoryList()
 }

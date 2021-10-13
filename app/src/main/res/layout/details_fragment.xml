@@ -22,6 +22,7 @@
                 android:id="@+id/img_poster"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/img_height_400"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -41,11 +42,12 @@
 
             <androidx.appcompat.widget.AppCompatRatingBar
                 android:id="@+id/rating_bar"
-                style="?android:attr/ratingBarStyleSmall"
+                style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_144"
                 android:layout_marginTop="@dimen/margin_12"
+                android:stepSize="0.1"
                 app:layout_constraintEnd_toStartOf="@+id/text_rating"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_title" />
@@ -65,7 +67,7 @@
                 android:id="@+id/text_genres"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_8"
+                android:layout_marginStart="@dimen/margin_8"
                 android:layout_marginTop="@dimen/margin_16"
                 android:text="@string/genres"
                 android:textSize="@dimen/text_size_16"
@@ -84,16 +86,39 @@
                 tools:text="@string/movie_details" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_director"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_16"
+                android:text="@string/director"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_genres_list" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_director_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_8"
+                android:textSize="@dimen/text_size_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_director"
+                tools:text="@string/movie_details" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_about"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_8"
+                android:layout_marginStart="@dimen/margin_8"
                 android:layout_marginTop="@dimen/margin_16"
                 android:text="@string/about"
                 android:textSize="@dimen/text_size_16"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_genres_list" />
+                app:layout_constraintTop_toBottomOf="@+id/text_director_name" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_details"
@@ -101,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_8"
                 android:textSize="@dimen/text_size_16"
-                app:layout_constraintStart_toStartOf="@+id/img_poster"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_about"
                 tools:text="@string/movie_details" />
 
