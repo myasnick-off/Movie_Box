@@ -12,7 +12,7 @@ import com.example.moviebox.ui.main.MainFragment
 class MainFragmentAdapter(private val itemViewClickListener: MainFragment.OnItemViewClickListener) :
     RecyclerView.Adapter<MainFragmentAdapter.MainViewHolder>() {
 
-    private var categoryList: List<Category> = listOf()
+    private var categoryList: List<Category> = emptyList()
     private lateinit var binding: MainRecyclerItemBinding
 
     fun setData(data: List<Category>) {
@@ -36,10 +36,12 @@ class MainFragmentAdapter(private val itemViewClickListener: MainFragment.OnItem
 
         fun bind(category: Category) = with(binding) {
             categoryTextView.text = category.name.title
-            innerRecycler.layoutManager =
-                LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            innerRecycler.adapter = InnerRecyclerAdapter(itemViewClickListener).apply {
-                setData(category.movieList)
+            innerRecycler.apply {
+                layoutManager =
+                    LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = InnerRecyclerAdapter(itemViewClickListener).apply {
+                    setData(category.movieList)
+                }
             }
         }
 

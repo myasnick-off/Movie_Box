@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.moviebox.AppState
 import com.example.moviebox.R
 import com.example.moviebox.databinding.MainFragmentBinding
+import com.example.moviebox.di.hide
+import com.example.moviebox.di.show
+import com.example.moviebox.di.showSnackBar
 import com.example.moviebox.model.entities.Movie
 import com.example.moviebox.ui.adapters.MainFragmentAdapter
 import com.example.moviebox.ui.details.DetailsFragment
-import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
@@ -66,7 +68,7 @@ class MainFragment : Fragment() {
     private fun renderData(appState: AppState) = with(binding) {
         when (appState) {
             is AppState.Success -> {
-                mainProgressBar.visibility = View.GONE
+                mainProgressBar.hide()
                 mainRecycler
                     .layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
@@ -76,14 +78,14 @@ class MainFragment : Fragment() {
                 mainRecycler.adapter = adapter
             }
             is AppState.Loading -> {
-                mainProgressBar.visibility = View.VISIBLE
+                mainProgressBar.show()
             }
             is AppState.Error -> {
-                mainProgressBar.visibility = View.GONE
-                Snackbar
-                    .make(main, R.string.error, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.reload) { viewModel.getMovieList() }
-                    .show()
+                mainProgressBar.hide()
+                main.showSnackBar(
+                    getString(R.string.error),
+                    getString(R.string.reload)
+                ) { viewModel.getMovieList() }
             }
         }
     }
