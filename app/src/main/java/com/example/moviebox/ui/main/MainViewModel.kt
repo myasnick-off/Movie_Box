@@ -14,16 +14,28 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     fun getLiveData(): LiveData<AppState> = liveData
 
-    fun getMovieList() = getMovieListFromLocalSource()
+    fun getMovieList() = getMovieListFromServer()
 
     private fun getMovieListFromLocalSource() {
         liveData.value = AppState.Loading
         Thread {
             sleep(1000)
             // рандомизатор загрузки данных
-            when(Math.random().roundToInt()) {
+            when (Math.random().roundToInt()) {
                 1 -> liveData.postValue(AppState.Success(repository.getCategoryListFromLocal()))
                 0 -> liveData.postValue(AppState.Error(Throwable()))
+            }
+        }.start()
+    }
+
+    private fun getMovieListFromServer() {
+        liveData.value = AppState.Loading
+        Thread {
+            val categoryList = repository.getCategoryListFromServer()
+            if (categoryList != null) {
+                liveData.postValue(AppState.Success(categoryList))
+            } else {
+                liveData.postValue(AppState.Error(Throwable()))
             }
         }.start()
     }

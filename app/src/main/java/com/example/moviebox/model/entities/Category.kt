@@ -1,12 +1,59 @@
 package com.example.moviebox.model.entities
 
-data class Category(val name: CategoryName, var movieList: List<Movie>) {
+import com.example.moviebox.model.rest_entities.MovieDTO
+
+data class Category(val name: String, var movieList: ArrayList<MovieDTO>) {
 
     companion object {
         fun getDefaultCategoryList() = listOf(
-            Category(CategoryName.LATEST, Movie.getDefaultMovieList(8, CategoryName.LATEST)),
-            Category(CategoryName.THRILLER, Movie.getDefaultMovieList(8, CategoryName.THRILLER)),
-            Category(CategoryName.COMEDY, Movie.getDefaultMovieList(8, CategoryName.COMEDY)),
+            Category(
+                CategoryName.LATEST.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.LATEST)
+            ),
+            Category(
+                CategoryName.THRILLER.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.THRILLER)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
+            Category(
+                CategoryName.COMEDY.title,
+                MovieDTO.getDefaultMovieList(20, CategoryName.COMEDY)
+            ),
         )
     }
 }

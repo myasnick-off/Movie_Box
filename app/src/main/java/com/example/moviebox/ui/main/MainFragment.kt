@@ -14,7 +14,6 @@ import com.example.moviebox.databinding.MainFragmentBinding
 import com.example.moviebox.di.hide
 import com.example.moviebox.di.show
 import com.example.moviebox.di.showSnackBar
-import com.example.moviebox.model.entities.Movie
 import com.example.moviebox.ui.adapters.MainFragmentAdapter
 import com.example.moviebox.ui.details.DetailsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -30,11 +29,12 @@ class MainFragment : Fragment() {
 
     // реализация события по нажатию на itemView фильма в RecyclerView
     private val onMovieItemClickListener = object : OnItemViewClickListener {
-        override fun onItemClicked(movie: Movie) {
+        override fun onItemClicked(movieId: Int) {
             val manager = activity?.supportFragmentManager
+            // передаем во фрагмент с деталями фильма его ID
             manager?.let {
                 val bundle = Bundle().apply {
-                    putParcelable(DetailsFragment.KEY_BUNDLE, movie)
+                    putInt(DetailsFragment.KEY_BUNDLE, movieId)
                 }
                 manager
                     .beginTransaction()
@@ -67,6 +67,7 @@ class MainFragment : Fragment() {
 
     private fun renderData(appState: AppState) = with(binding) {
         when (appState) {
+            is AppState.Loading -> mainProgressBar.show()
             is AppState.Success -> {
                 mainProgressBar.hide()
                 mainRecycler
@@ -76,9 +77,6 @@ class MainFragment : Fragment() {
                     setData(appState.categoryData)
                 }
                 mainRecycler.adapter = adapter
-            }
-            is AppState.Loading -> {
-                mainProgressBar.show()
             }
             is AppState.Error -> {
                 mainProgressBar.hide()
@@ -91,7 +89,7 @@ class MainFragment : Fragment() {
     }
 
     interface OnItemViewClickListener {
-        fun onItemClicked(movie: Movie)
+        fun onItemClicked(movieId: Int)
     }
 
     companion object {

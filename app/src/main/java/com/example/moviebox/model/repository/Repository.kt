@@ -1,13 +1,15 @@
 package com.example.moviebox.model.repository
 
 import com.example.moviebox.model.entities.Category
-import com.example.moviebox.model.entities.Movie
+import com.example.moviebox.model.rest_entities.GenreListDTO
+import com.example.moviebox.model.rest_entities.MovieDetailsDTO
 
 interface Repository {
-    fun getMovieDataFromLocal(): Movie
-    fun getMovieListFromLocal(): List<Movie>
+
     fun getCategoryListFromLocal(): List<Category>
-    fun getMovieDataFromServer(): Movie
-    fun getMovieListFromServer(): List<Movie>
-    fun getCategoryListServer(): List<Category>
+    fun getMovieDataFromLocal(): MovieDetailsDTO
+
+    fun getMovieDataFromServer(id: Int): MovieDetailsDTO?
+    fun getCategoryListFromServer(): List<Category>?
+    fun getGenreListFromServer(): GenreListDTO?
 }

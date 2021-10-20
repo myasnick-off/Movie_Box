@@ -4,18 +4,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.moviebox.databinding.InnerRecyclerItemBinding
-import com.example.moviebox.model.entities.Movie
+import com.example.moviebox.model.rest_entities.MovieDTO
 import com.example.moviebox.ui.main.MainFragment
 
 class InnerRecyclerAdapter(private val itemViewClickListener: MainFragment.OnItemViewClickListener) :
     RecyclerView.Adapter<InnerRecyclerAdapter.InnerViewHolder>() {
 
-    private var movieList: List<Movie> = emptyList()
+    private var movieList: List<MovieDTO> = emptyList()
     private lateinit var binding: InnerRecyclerItemBinding
 
-    fun setData(data: List<Movie>) {
+    fun setData(data: List<MovieDTO>) {
         movieList = data
         notifyDataSetChanged()
     }
@@ -34,13 +33,13 @@ class InnerRecyclerAdapter(private val itemViewClickListener: MainFragment.OnIte
 
     inner class InnerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(movie: Movie) = with(binding) {
+        fun bind(movie: MovieDTO) = with(binding) {
             itemMovieTitle.text = movie.title
-            itemMovieYear.text = movie.year.toString()
+            itemMovieYear.text = movie.release_date
             // загрузка картинки из Интернета по ее url
-            Glide.with(root).load(movie.poster).into(itemMoviePoster)
+            //Glide.with(root).load(movie.poster).into(itemMoviePoster)
 
-            root.setOnClickListener { itemViewClickListener.onItemClicked(movie) }
+            root.setOnClickListener { itemViewClickListener.onItemClicked(movie.id) }
         }
     }
 
