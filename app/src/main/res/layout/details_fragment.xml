@@ -28,8 +28,8 @@
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_margin="@dimen/margin_16"
+            android:gravity="center"
             android:textSize="@dimen/text_size_24"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -131,13 +131,14 @@
             android:id="@+id/by_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_12"
             android:layout_marginTop="@dimen/margin_16"
-            android:layout_marginBottom="@dimen/margin_16"
+            android:layout_marginBottom="@dimen/margin_4"
+            android:text="@string/from_tmdb"
+            android:textSize="@dimen/text_size_12"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_details"
-            tools:text="@string/by_tmdb" />
+            app:layout_constraintTop_toBottomOf="@+id/text_details" />
 
         <ProgressBar
             android:id="@+id/details_progress_bar"
