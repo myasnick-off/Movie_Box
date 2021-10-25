@@ -1,5 +1,6 @@
 package com.example.moviebox.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ class MainFragmentAdapter(private val itemViewClickListener: MainFragment.OnItem
     private var categoryList: List<Category> = listOf()
     private lateinit var binding: MainRecyclerItemBinding
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<Category>) {
         categoryList = data
         notifyDataSetChanged()

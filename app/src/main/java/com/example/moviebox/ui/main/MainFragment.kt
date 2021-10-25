@@ -1,31 +1,31 @@
 package com.example.moviebox.ui.main
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviebox.AppState
 import com.example.moviebox.R
 import com.example.moviebox.databinding.MainFragmentBinding
 import com.example.moviebox.di.hide
 import com.example.moviebox.di.show
 import com.example.moviebox.di.showSnackBar
+import com.example.moviebox.model.entities.Category
+import com.example.moviebox.services.DataLoadingService
 import com.example.moviebox.ui.adapters.MainFragmentAdapter
 import com.example.moviebox.ui.details.DetailsFragment
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
 
-    private val viewModel: MainViewModel by viewModel()
-
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
-
-    private var adapter: MainFragmentAdapter? = null
 
     // реализация события по нажатию на itemView фильма в RecyclerView
     private val onMovieItemClickListener = object : OnItemViewClickListener {
@@ -45,6 +45,40 @@ class MainFragment : Fragment() {
         }
     }
 
+    // Приемник ширококвещательных сообщений, приходящих от сервиса DataLoadingService
+    private val dataLoadingServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent) {
+            when (intent.getStringExtra(DataLoadingService.INTENT_SERVICE_STATUS)) {
+                DataLoadingService.INTENT_SERVICE_LOADING -> binding.mainProgressBar.show()
+                DataLoadingService.INTENT_SERVICE_SUCCESS -> {
+                    val arr = intent.getParcelableArrayExtra(DataLoadingService.INTENT_SERVICE_DATA)
+                    val categoryList = arr?.toList() as List<Category>
+                    renderData(categoryList)
+                }
+                DataLoadingService.INTENT_SERVICE_ERROR -> {
+                    binding.mainProgressBar.hide()
+                    binding.main.showSnackBar(
+                        getString(R.string.error),
+                        getString(R.string.reload)
+                    ) { DataLoadingService.start(requireContext()) }
+                }
+            }
+        }
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // подписываемся на локальные широковещательные сообщения от сервиса DataLoadingService
+        context?.let {
+            LocalBroadcastManager.getInstance(it).registerReceiver(
+                dataLoadingServiceReceiver,
+                IntentFilter(DataLoadingService.INTENT_ACTION_KEY)
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -54,38 +88,37 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.mainRecycler.adapter = adapter
-        val observer = Observer<AppState> { renderData(it) }
-        viewModel.getLiveData().observe(viewLifecycleOwner, observer)
-        viewModel.getMovieList()
+
+        // запкскаем сервис DataLoadingService
+        DataLoadingService.start(requireContext())
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    private fun renderData(appState: AppState) = with(binding) {
-        when (appState) {
-            is AppState.Loading -> mainProgressBar.show()
-            is AppState.Success -> {
-                mainProgressBar.hide()
-                mainRecycler
-                    .layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-
-                adapter = MainFragmentAdapter(onMovieItemClickListener).apply {
-                    setData(appState.categoryData)
-                }
-                mainRecycler.adapter = adapter
-            }
-            is AppState.Error -> {
-                mainProgressBar.hide()
-                main.showSnackBar(
-                    getString(R.string.error),
-                    getString(R.string.reload)
-                ) { viewModel.getMovieList() }
-            }
+    override fun onDestroy() {
+        // отписываемся от локальных широковещательных сообщений сервиса DataLoadingService
+        context?.let {
+            LocalBroadcastManager.getInstance(it).unregisterReceiver(dataLoadingServiceReceiver)
         }
+        // останавливаем сервис
+        DataLoadingService.stop(requireContext())
+        super.onDestroy()
+    }
+
+    // конфигурируем GUI главного фрагмента в соответствии с полученными данными
+    private fun renderData(dataList: List<Category>) = with(binding) {
+        mainProgressBar.hide()
+        mainRecycler
+            .layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
+        val adapter = MainFragmentAdapter(onMovieItemClickListener).apply {
+            setData(dataList)
+        }
+        mainRecycler.adapter = adapter
     }
 
     interface OnItemViewClickListener {
