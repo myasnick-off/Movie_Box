@@ -9,4 +9,6 @@
     <string name="genres">Genres:</string>
     <string name="category">Category</string>
     <string name="director">Director:</string>
+    <string name="release_date">Release date:</string>
+    <string name="from_tmdb">From TMDB</string>
 </resources>

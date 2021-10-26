@@ -1,7 +1,6 @@
 package com.example.moviebox
 
 import com.example.moviebox.model.entities.Category
-import com.example.moviebox.model.entities.Movie
 
 sealed class AppState {
     data class Success(val categoryData: List<Category>) : AppState()
