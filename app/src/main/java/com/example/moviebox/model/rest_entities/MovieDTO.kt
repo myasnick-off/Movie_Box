@@ -2,20 +2,26 @@ package com.example.moviebox.model.rest_entities
 
 import android.os.Parcelable
 import com.example.moviebox.model.entities.CategoryName
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MovieDTO(
     val id: Int,
-    val release_date: String,
+    @SerializedName("poster_path")
+    val posterPath: String,
+    @SerializedName("release_date")
+    val releaseDate: String,
     val title: String,
-    val vote_average: Number
+    @SerializedName("vote_average")
+    val voteAverage: Number
 ) : Parcelable {
 
     companion object {
 
         private fun getDefaultLatest() = MovieDTO(
             1234,
+            "",
             "10.09.2021",
             "Дюна",
             7.9
@@ -23,6 +29,7 @@ data class MovieDTO(
 
         private fun getDefaultThriller() = MovieDTO(
             6234,
+            "",
             "12.08.1984",
             "Терминатор",
             8.0
@@ -31,6 +38,7 @@ data class MovieDTO(
         private fun getDefaultComedy() = MovieDTO(
 
             6334,
+            "",
             "25.07.1998",
             "Карты, деньги, два ствола",
             8.6

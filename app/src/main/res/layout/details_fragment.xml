@@ -13,7 +13,7 @@
         android:clickable="true"
         android:focusable="true">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/img_poster"
             android:layout_width="match_parent"
             android:layout_height="@dimen/img_height_400"
@@ -26,7 +26,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_16"
             android:gravity="center"
@@ -74,7 +74,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_genres_list"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_8"
             android:textSize="@dimen/text_size_16"
@@ -96,7 +96,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_date"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_8"
             android:textSize="@dimen/text_size_16"
@@ -119,7 +119,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_details"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_8"
             android:textSize="@dimen/text_size_16"
@@ -131,7 +131,7 @@
             android:id="@+id/by_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_16"
+            android:layout_marginTop="@dimen/margin_32"
             android:layout_marginBottom="@dimen/margin_4"
             android:text="@string/from_tmdb"
             android:textSize="@dimen/text_size_12"

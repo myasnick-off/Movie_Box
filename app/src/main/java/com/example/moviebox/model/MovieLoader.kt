@@ -8,8 +8,6 @@ import com.example.moviebox.model.rest_entities.MovieListDTO
 import com.google.gson.Gson
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.lang.Exception
-import java.lang.StringBuilder
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.stream.Collectors
@@ -21,7 +19,8 @@ object MovieLoader {
 
     fun loadGenreList(): GenreListDTO? {
         try {
-            val uri = URL("https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=ru")
+            val uri =
+                URL("https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=ru")
             lateinit var urlConnection: HttpsURLConnection
 
             try {
@@ -88,16 +87,19 @@ object MovieLoader {
 
             try {
                 urlConnection = uri.openConnection() as HttpsURLConnection
-                urlConnection.requestMethod = "GET"
-                urlConnection.readTimeout = 10000
+                with(urlConnection) {
+                    requestMethod = "GET"
+                    readTimeout = 10000
 
-                val bufferedReader = BufferedReader(InputStreamReader(urlConnection.inputStream))
-                val lines = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                    getLinesForOld(bufferedReader)
-                } else {
-                    getLines(bufferedReader)
+                    val bufferedReader =
+                        BufferedReader(InputStreamReader(urlConnection.inputStream))
+                    val lines = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                        getLinesForOld(bufferedReader)
+                    } else {
+                        getLines(bufferedReader)
+                    }
+                    return Gson().fromJson(lines, MovieDetailsDTO::class.java)
                 }
-                return Gson().fromJson(lines, MovieDetailsDTO::class.java)
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
