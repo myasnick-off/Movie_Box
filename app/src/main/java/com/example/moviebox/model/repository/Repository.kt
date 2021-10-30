@@ -6,9 +6,6 @@ import com.example.moviebox.model.rest_entities.MovieDetailsDTO
 
 interface Repository {
 
-    fun getCategoryListFromLocal(): List<Category>
-    fun getMovieDataFromLocal(): MovieDetailsDTO
-
     fun getMovieDataFromServer(id: Int): MovieDetailsDTO?
     fun getCategoryListFromServer(): List<Category>?
     fun getGenreListFromServer(): GenreListDTO?

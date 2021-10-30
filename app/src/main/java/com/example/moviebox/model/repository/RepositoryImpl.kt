@@ -9,10 +9,6 @@ import com.example.moviebox.model.rest_entities.MovieDetailsDTO
 
 class RepositoryImpl : Repository {
 
-    override fun getCategoryListFromLocal() = Category.getDefaultCategoryList()
-
-    override fun getMovieDataFromLocal() = MovieDetailsDTO.getDefaultDetails()
-
     override fun getMovieDataFromServer(id: Int): MovieDetailsDTO? {
         return MovieDetailsRepo.api.getMovieDetails(id).execute().body()
     }
