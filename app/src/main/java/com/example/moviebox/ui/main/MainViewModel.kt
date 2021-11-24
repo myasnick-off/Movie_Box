@@ -16,18 +16,6 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     fun getMovieList() = getMovieListFromServer()
 
-    private fun getMovieListFromLocalSource() {
-        liveData.value = AppState.Loading
-        Thread {
-            sleep(1000)
-            // рандомизатор загрузки данных
-            when (Math.random().roundToInt()) {
-                1 -> liveData.postValue(AppState.Success(repository.getCategoryListFromLocal()))
-                0 -> liveData.postValue(AppState.Error(Throwable()))
-            }
-        }.start()
-    }
-
     private fun getMovieListFromServer() {
         liveData.value = AppState.Loading
         Thread {

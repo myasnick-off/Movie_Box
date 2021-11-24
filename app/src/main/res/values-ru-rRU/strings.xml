@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about">Описание:</string>
+    <string name="error">Ошибка загрузки!</string>
+    <string name="reload">Еще раз!</string>
+    <string name="genres">Жанры:</string>
+    <string name="category">Категория</string>
+    <string name="director">Режиссер:</string>
+    <string name="release_date">Премьера:</string>
+</resources>

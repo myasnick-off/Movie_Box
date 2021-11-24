@@ -25,16 +25,4 @@ class DetailsViewModel(private val repository: Repository) : ViewModel() {
             }
         }.start()
     }
-
-    private fun getMovieDetailsFromLocal(){
-        liveData.value = DetailsAppState.Loading
-        Thread {
-            Thread.sleep(1000)
-            // рандомизатор загрузки данных
-            when (Math.random().roundToInt()) {
-                1 -> liveData.postValue(DetailsAppState.Success(repository.getMovieDataFromLocal()))
-                0 -> liveData.postValue(DetailsAppState.Error(Throwable()))
-            }
-        }.start()
-    }
 }

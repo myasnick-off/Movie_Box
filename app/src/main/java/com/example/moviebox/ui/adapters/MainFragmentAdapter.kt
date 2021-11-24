@@ -3,22 +3,18 @@ package com.example.moviebox.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviebox.databinding.MainRecyclerItemBinding
 import com.example.moviebox.model.entities.Category
 import com.example.moviebox.ui.main.MainFragment
 
 class MainFragmentAdapter(private val itemViewClickListener: MainFragment.OnItemViewClickListener) :
-    RecyclerView.Adapter<MainFragmentAdapter.MainViewHolder>() {
+    ListAdapter<Category, MainFragmentAdapter.MainViewHolder>(DiffCallBack()) {
 
-    private var categoryList: List<Category> = listOf()
     private lateinit var binding: MainRecyclerItemBinding
-
-    fun setData(data: List<Category>) {
-        categoryList = data
-        notifyDataSetChanged()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         binding = MainRecyclerItemBinding
@@ -27,10 +23,19 @@ class MainFragmentAdapter(private val itemViewClickListener: MainFragment.OnItem
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.bind(categoryList[position])
+        holder.bind(currentList[position])
     }
 
-    override fun getItemCount() = categoryList.size // когда размер списка больше 7 RecyclerView начинает дурить (начиная с 8го элемента вставляет элементы из начала)
+    override fun getItemCount() = currentList.size // когда размер списка больше 7 RecyclerView начинает дурить (начиная с 8го элемента вставляет элементы из начала)
+
+    // добавляем класс DiffUtil для обработки изменений в списке, и реализовываем его методы
+    private class DiffCallBack: DiffUtil.ItemCallback<Category>() {
+        override fun areItemsTheSame(oldItem: Category, newItem: Category) =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: Category, newItem: Category) =
+            oldItem == newItem
+    }
 
     inner class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -39,7 +44,7 @@ class MainFragmentAdapter(private val itemViewClickListener: MainFragment.OnItem
             // инициализируем вложенный горизонтальный RecyclerView
             innerRecycler.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = InnerRecyclerAdapter(itemViewClickListener).apply {
-                    setData(category.movieList)
+                    submitList(category.movieList.toMutableList())
                 }
             innerRecycler.adapter = adapter
         }

@@ -11,11 +11,11 @@ import com.example.moviebox.databinding.DetailsFragmentBinding
 import com.example.moviebox.di.hide
 import com.example.moviebox.di.show
 import com.example.moviebox.di.showSnackBar
+import com.example.moviebox.model.rest.ApiUtils
 import com.example.moviebox.model.rest_entities.GenreDTO
 import com.example.moviebox.model.rest_entities.MovieDetailsDTO
+import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.Error
-import java.lang.StringBuilder
 
 class DetailsFragment : Fragment() {
 
@@ -64,13 +64,21 @@ class DetailsFragment : Fragment() {
 
     private fun setData(movieData: MovieDetailsDTO) = with(binding) {
         textTitle.text = movieData.title
-        textRating.text = movieData.vote_average.toString()
-        textDate.text = movieData.release_date
+        textRating.text = movieData.voteAverage.toString()
+        textDate.text = movieData.releaseDate
         textGenresList.text = genreListToString(movieData.genres)
         textDetails.text = movieData.overview
-        ratingBar.rating = movieData.vote_average.toFloat() / 2
+        ratingBar.rating = movieData.voteAverage.toFloat() / 2
+
         // загрузка картинки из Интернета по ее url
-//        Glide.with(root).load(movieData.poster).into(imgPoster)
+        val posterUrl = ApiUtils.POSTER_BASE_URL + ApiUtils.POSTER_SIZE_M + movieData.posterPath
+//        Glide.with(root).load(posterUrl).into(imgPoster)
+//        imgPoster.load(posterUrl)
+        Picasso
+            .get()
+            .load(posterUrl)
+            .into(imgPoster)
+
         detailsGroup.show()
         detailsProgressBar.hide()
     }

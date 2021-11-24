@@ -74,7 +74,7 @@ class MainFragment : Fragment() {
                     .layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
                 adapter = MainFragmentAdapter(onMovieItemClickListener).apply {
-                    setData(appState.categoryData)
+                    submitList(appState.categoryData.toMutableList())
                 }
                 mainRecycler.adapter = adapter
             }
