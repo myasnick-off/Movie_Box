@@ -6,12 +6,13 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MovieDTO(
-    val id: Int,
+    val id: Long,
     @SerializedName("poster_path")
     val posterPath: String,
     @SerializedName("release_date")
     val releaseDate: String,
     val title: String,
     @SerializedName("vote_average")
-    val voteAverage: Number
+    val voteAverage: Double,
+    val adult: Boolean
 ) : Parcelable

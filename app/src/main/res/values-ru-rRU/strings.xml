@@ -7,4 +7,19 @@
     <string name="category">Категория</string>
     <string name="director">Режиссер:</string>
     <string name="release_date">Премьера:</string>
+    <string name="Main">Главная</string>
+    <string name="favorite">Избранное</string>
+    <string name="profile">Профиль</string>
+    <string name="settings">Настройки</string>
+    <string name="include_adult">Включить взрослый контент</string>
+    <string name="history">История</string>
+    <string name="wish_list">Буду смотреть</string>
+    <string name="clear_all">Очистить</string>
+    <string name="delete">Удалить</string>
+    <string name="add_to_favorite">Добавить в избранное</string>
+    <string name="add_to_wishlist">Добавить в список желаний</string>
+    <string name="warning">Внимание!</string>
+    <string name="delete_message">"Вы уверены, что хотите очистить весь список "</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>

@@ -10,7 +10,7 @@ interface MovieDetailsAPI {
 
     @GET("movie/{id}")
     fun getMovieDetails(
-        @Path(value = "id") movieId: Int,
+        @Path(value = "id") movieId: Long,
         @Query("api_key") apiKey: String = ApiUtils.API_KEY,
         @Query("language") lang: String = ApiUtils.LANG
     ): Call<MovieDetailsDTO>

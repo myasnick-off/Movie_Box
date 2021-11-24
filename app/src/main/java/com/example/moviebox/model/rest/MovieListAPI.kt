@@ -12,6 +12,7 @@ interface MovieListAPI {
         @Query("api_key") apiKey: String = ApiUtils.API_KEY,
         @Query("language") lang: String = ApiUtils.LANG,
         @Query("sort_by") sortBy: String = ApiUtils.POPULARITY_SORT,
+        @Query("include_adult") includeAdult: Boolean = false,
         @Query("with_genres") genreIds: Array<Int>
     ): Call<MovieListDTO>
 }

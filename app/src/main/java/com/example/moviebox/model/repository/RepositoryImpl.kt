@@ -9,11 +9,13 @@ import com.example.moviebox.model.rest_entities.MovieDetailsDTO
 
 class RepositoryImpl : Repository {
 
-    override fun getMovieDataFromServer(id: Int): MovieDetailsDTO? {
+    override fun getMovieDataFromServer(id: Long): MovieDetailsDTO? {
         return MovieDetailsRepo.api.getMovieDetails(id).execute().body()
     }
 
-    override fun getCategoryListFromServer(): List<Category>? {
+    // метод запроса с сервера списков фильмов по жанрам
+    // в качестве параметрва передаем статус допуска к фильмам для взрослых
+    override fun getCategoryListFromServer(withAdult: Boolean): List<Category>? {
         // создаем пустой массив со списками фильмов по жанрам
         val categoryList = arrayListOf<Category>()
 
@@ -25,7 +27,7 @@ class RepositoryImpl : Repository {
             for (i in 0 until it.genres.size) {
                 val genre = it.genres[i]
                 val movieList =
-                    MovieListRepo.api.getMovieListByGenre(genreIds = arrayOf(genre.id))
+                    MovieListRepo.api.getMovieListByGenre(includeAdult = withAdult, genreIds = arrayOf(genre.id))
                         .execute()
                         .body()
                 movieList?.let { categoryList.add(Category(genre.id, genre.name, movieList.results)) }
