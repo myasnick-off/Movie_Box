@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import coil.api.load
+import coil.load
 import com.example.moviebox.R
 import com.example.moviebox.model.rest.ApiUtils
 import com.example.moviebox.model.rest_entities.MovieDTO

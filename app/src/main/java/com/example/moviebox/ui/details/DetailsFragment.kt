@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import coil.api.load
+import coil.load
 import com.example.moviebox.R
 import com.example.moviebox.databinding.DetailsFragmentBinding
 import com.example.moviebox.di.hide
@@ -16,6 +16,7 @@ import com.example.moviebox.di.showSnackBar
 import com.example.moviebox.model.rest.ApiUtils
 import com.example.moviebox.model.rest_entities.GenreDTO
 import com.example.moviebox.model.rest_entities.MovieDetailsDTO
+import com.example.moviebox.ui.contacts.ContactsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailsFragment : Fragment() {
@@ -55,7 +56,7 @@ class DetailsFragment : Fragment() {
         movieId?.let { localViewModel.checkInLocalDB(it) }
 
         // обработка события по нажатию кнопок меню
-        binding.detailsToolbar.setOnMenuItemClickListener { it ->
+        binding.detailsToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_favorite -> {
                     if (inFavorite) {
@@ -77,6 +78,14 @@ class DetailsFragment : Fragment() {
                         it.setIcon(R.drawable.ic_baseline_bookmark_24)
                     }
                     movieId?.let { localViewModel.checkInLocalDB(movieId!!) }
+                    true
+                }
+                R.id.action_share -> {
+                    val bundle = Bundle().apply { putParcelable(KEY_DETAILS, movieData) }
+                    activity?.supportFragmentManager?.beginTransaction()
+                        ?.add(R.id.container, ContactsFragment.newInstance(bundle))
+                        ?.addToBackStack("ContactsFragment")
+                        ?.commit()
                     true
                 }
                 else -> false
@@ -112,8 +121,6 @@ class DetailsFragment : Fragment() {
                 movieData = appState.movieData
                 // заполняем фрагмент данными фильма
                 setData(movieData)
-                // подключаем кнопки меню к Toolbar
-//                detailsToolbar.inflateMenu(R.menu.menu_details)
                 detailsProgressBar.hide()
             }
             is DetailsAppState.Error -> {
@@ -166,7 +173,8 @@ class DetailsFragment : Fragment() {
     }
 
     companion object {
-        const val KEY_BUNDLE = "movie_data"
+        const val KEY_BUNDLE = "movie_id"
+        const val KEY_DETAILS = "movie_details"
 
         fun newInstance(bundle: Bundle): DetailsFragment {
             return DetailsFragment().apply { arguments = bundle }

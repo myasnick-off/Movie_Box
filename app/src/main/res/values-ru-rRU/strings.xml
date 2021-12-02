@@ -3,10 +3,10 @@
     <string name="about">Описание:</string>
     <string name="error">Ошибка загрузки!</string>
     <string name="reload">Еще раз!</string>
-    <string name="genres">Жанры:</string>
+    <string name="genres">"Жанры: "</string>
     <string name="category">Категория</string>
-    <string name="director">Режиссер:</string>
-    <string name="release_date">Премьера:</string>
+    <string name="director">"Режиссер: "</string>
+    <string name="release_date">"Премьера: "</string>
     <string name="Main">Главная</string>
     <string name="favorite">Избранное</string>
     <string name="profile">Профиль</string>
@@ -22,4 +22,18 @@
     <string name="delete_message">"Вы уверены, что хотите очистить весь список "</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="share">Поделиться</string>
+    <string name="need_permissions_to_read_contacts">Необходимо разрешение на чтение контактов!</string>
+    <string name="need_permissions_to_send_sms">Необходимо разрешение на отправку SMS!</string>
+    <string name="title">"Название: "</string>
+    <string name="rating">"Рейтинг: "</string>
+    <string name="my_recommends">"Рекомендую посмотреть! "</string>
+    <string name="choose_contact">Выберите контакт для отправки СМС</string>
+    <string name="send_sms_to_contact">Отправить сообщение контакту</string>
+    <string name="fail_sending_sms">Не удалось отправить СМС!</string>
+    <string name="sms_sent_success">СМС успешно отправлено!</string>
+    <string name="search">Поиск</string>
+    <string name="filter">Фильтр</string>
+    <string name="cant_find">Ничего не найдено!</string>
+    <string name="apply">Применить</string>
 </resources>
