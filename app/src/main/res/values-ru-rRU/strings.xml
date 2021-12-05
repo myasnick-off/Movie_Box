@@ -36,4 +36,13 @@
     <string name="filter">Фильтр</string>
     <string name="cant_find">Ничего не найдено!</string>
     <string name="apply">Применить</string>
+    <string name="year_range">"Года: "</string>
+    <string name="rating_range">"Рейтинг: "</string>
+    <string name="any">Любой</string>
+    <string name="cancel">Отмена</string>
+    <string name="map">Карта</string>
+    <string name="need_permissions_to_get_location">Необходимо разрешение чтобы получить доступ к метоположению!</string>
+    <string name="gps_turned_off">GPS выключен</string>
+    <string name="last_location_unknown">Последнее метоположение неизвестно</string>
+    <string name="last_known_location">Последнее изместное метоположение</string>
 </resources>

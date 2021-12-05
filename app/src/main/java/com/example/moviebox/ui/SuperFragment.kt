@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.example.moviebox.R
 import com.example.moviebox.databinding.SuperFragmentBinding
 import com.example.moviebox.ui.main.MainFragment
+import com.example.moviebox.ui.maps.MapsFragment
 import com.example.moviebox.ui.profile.ProfileFragment
 import com.example.moviebox.ui.settings.SettingsFragment
 
@@ -42,6 +43,12 @@ class SuperFragment : Fragment(), BackPressedMonitor {
                     childFragmentManager.beginTransaction()
                         .replace(R.id.super_container, ProfileFragment.newInstance())
                         .addToBackStack("ProfileFragment")
+                        .commit()
+                }
+                R.id.action_map -> {
+                    childFragmentManager.beginTransaction()
+                        .replace(R.id.super_container, MapsFragment.newInstance())
+                        .addToBackStack("MapsFragment")
                         .commit()
                 }
                 R.id.action_settings -> {
