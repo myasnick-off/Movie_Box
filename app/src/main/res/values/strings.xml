@@ -53,6 +53,9 @@
     <string name="gps_turned_off">GPS turned off</string>
     <string name="last_location_unknown">Last location unknown!</string>
     <string name="last_known_location">It is the last known location!</string>
+    <string name="satellite">Satellite</string>
+    <string name="normal">Normal</string>
+    <string name="hybrid">Hybrid</string>
     <array name="initial_range_values">
         <item>1920.0</item>
         <item>2021.0</item>

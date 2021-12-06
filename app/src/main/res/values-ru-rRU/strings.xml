@@ -45,4 +45,7 @@
     <string name="gps_turned_off">GPS выключен</string>
     <string name="last_location_unknown">Последнее метоположение неизвестно</string>
     <string name="last_known_location">Последнее изместное метоположение</string>
+    <string name="satellite">Спутник</string>
+    <string name="normal">Схема</string>
+    <string name="hybrid">Гибрид</string>
 </resources>
