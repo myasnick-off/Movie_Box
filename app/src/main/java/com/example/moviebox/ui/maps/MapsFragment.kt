@@ -71,7 +71,7 @@ class MapsFragment : Fragment() {
         getAddressAsync(thisLocation)
         val currentPlace =
             LatLng(location?.latitude ?: 15.7, location?.longitude ?: 37.8)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPlace, 15f))
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentPlace, 15f))
     }
 
     // колбэк, вызываемый как только карта загрузилась
@@ -212,7 +212,7 @@ class MapsFragment : Fragment() {
         val geocoder = Geocoder(requireContext())
         Thread {
             try {
-                val addresses = geocoder.getFromLocationName(searchText, 1)
+                val addresses = geocoder.getFromLocationName(searchText, 10)
                 if (addresses.isNotEmpty() && searchText != null) {
                     view.post {
                         goToAddress(addresses, searchText)
@@ -232,7 +232,7 @@ class MapsFragment : Fragment() {
     private fun goToAddress(addresses: MutableList<Address>, searchText: String) {
         val latLng = LatLng(addresses[0].latitude, addresses[0].longitude)
         setMarker(latLng, searchText)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
     }
 
     // метод установки нового маркера на карте с указанием адреса
