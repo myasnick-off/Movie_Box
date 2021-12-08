@@ -1,4 +1,5 @@
 <resources>
+    <string name="google_maps_key" translatable="false">AIzaSyAwbJFLmVWNozOF62bp-Sf6Dq8ayX7UpVE</string>
     <string name="app_name" translatable="false">Movie Box</string>
     <string name="movie_title" translatable="false">Movie Title</string>
     <string name="rating_10" translatable="false">10</string>
@@ -47,6 +48,14 @@
     <string name="rating_range">Rating range: </string>
     <string name="any">Any</string>
     <string name="cancel">Cancel</string>
+    <string name="map">Map</string>
+    <string name="need_permissions_to_get_location">Need permissions to get your location!</string>
+    <string name="gps_turned_off">GPS turned off</string>
+    <string name="last_location_unknown">Last location unknown!</string>
+    <string name="last_known_location">It is the last known location!</string>
+    <string name="satellite">Satellite</string>
+    <string name="normal">Normal</string>
+    <string name="hybrid">Hybrid</string>
     <array name="initial_range_values">
         <item>1920.0</item>
         <item>2021.0</item>
