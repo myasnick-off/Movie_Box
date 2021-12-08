@@ -88,6 +88,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        // слушатель ответа от диалогового окна очитски списка
         childFragmentManager.setFragmentResultListener(
             KEY_DELETE_DIALOG,
             viewLifecycleOwner,

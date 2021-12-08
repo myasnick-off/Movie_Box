@@ -6,8 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.moviebox.R
 import com.example.moviebox.databinding.FragmentSettingsBinding
-import com.google.android.material.snackbar.Snackbar
+import com.example.moviebox.ui.contacts.ContactsFragment
 
 class SettingsFragment : Fragment() {
 
@@ -17,7 +18,6 @@ class SettingsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -30,14 +30,13 @@ class SettingsFragment : Fragment() {
         switchAdult.setOnClickListener {
             // записываем положение переключателя в SharedPreferences
             val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-            sharedPref?.let { it
-                .edit()
-                .putBoolean(INCLUDE_ADULT_KEY, switchAdult.isChecked)
-                .apply()
+            sharedPref?.let {
+                it
+                    .edit()
+                    .putBoolean(INCLUDE_ADULT_KEY, switchAdult.isChecked)
+                    .apply()
             }
-//            Snackbar.make(profile, if(switchAdult.isChecked) "ON" else "OFF", Snackbar.LENGTH_SHORT).show()
         }
-
     }
 
     // метод инициализации переключателей настройки

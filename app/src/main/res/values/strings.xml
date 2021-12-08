@@ -6,10 +6,10 @@
     <string name="about">About:</string>
     <string name="error">Loading error!</string>
     <string name="reload">Try again!</string>
-    <string name="genres">Genres:</string>
+    <string name="genres">Genres: </string>
     <string name="category">Category</string>
     <string name="director">Director:</string>
-    <string name="release_date">Release date:</string>
+    <string name="release_date">Release date: </string>
     <string name="from_tmdb" translatable="false">From TMDB</string>
     <string name="Main">Main</string>
     <string name="favorite">Favorite</string>
@@ -27,4 +27,32 @@
     <string name="delete_message">Are you sure you want to clear all </string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="contacts" translatable="false">contacts</string>
+    <string name="share">share</string>
+    <string name="need_permissions_to_read_contacts">Need permissions to read contacts!</string>
+    <string name="need_permissions_to_send_sms">Need permissions to send SMS!</string>
+    <string name="person_name" translatable="false">Person_name</string>
+    <string name="title">Title: </string>
+    <string name="rating">"Rating: "</string>
+    <string name="my_recommends">"My recommends! "</string>
+    <string name="choose_contact">Choose a contact to sand SMS</string>
+    <string name="send_sms_to_contact">Send SMS to contact</string>
+    <string name="fail_sending_sms">Fail to sand SMS!</string>
+    <string name="sms_sent_success">SMS sent successfully!</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="cant_find">Nothing found!</string>
+    <string name="apply">Apply</string>
+    <string name="year_range">Year range: </string>
+    <string name="rating_range">Rating range: </string>
+    <string name="any">Any</string>
+    <string name="cancel">Cancel</string>
+    <array name="initial_range_values">
+        <item>1920.0</item>
+        <item>2021.0</item>
+    </array>
+    <array name="initial_rating_values">
+        <item>0.0</item>
+        <item>10.0</item>
+    </array>
 </resources>
