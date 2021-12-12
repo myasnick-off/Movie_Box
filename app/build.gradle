@@ -21,12 +21,43 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            Properties passProperties = new Properties()
+            passProperties.load(project.rootProject.file("passwords.properties").newDataInputStream())
+
+            storeFile file("movie_box_keys.jks")
+            storePassword  passProperties['store_password']
+            keyAlias 'key0'
+            keyPassword  passProperties['key_password']
         }
     }
+
+    buildTypes.each {
+        Properties apiProperties = new Properties()
+        apiProperties.load(project.rootProject.file("apikey.properties").newDataInputStream())
+        def apiKey = apiProperties.getProperty("tmdb_api_key", "")
+        it.buildConfigField "String", "API_KEY", apiKey
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "TYPE", '"RELEASE"'
+        }
+        debug {
+            versionNameSuffix "-debug"
+            buildConfigField "String", "TYPE", '"DEBUG"'
+        }
+        beta {
+            initWith debug
+            versionNameSuffix "-beta"
+            buildConfigField "String", "TYPE", '"BETA"'
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -36,6 +67,17 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+    flavorDimensions 'version'
+    productFlavors {
+        simple {
+            dimension 'version'
+            versionNameSuffix '.spl'
+        }
+        advanced {
+            dimension 'version'
+            versionNameSuffix '.adv'
+        }
     }
 }
 

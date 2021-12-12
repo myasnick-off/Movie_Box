@@ -101,13 +101,13 @@ class TabFragment : Fragment() {
 
     private fun renderData(appState: ProfileAppState) = with(binding) {
         when (appState) {
-            ProfileAppState.Loading -> tabProgressBar.show()
+            ProfileAppState.Loading -> tabProgressBar.progressItem.show()
             is ProfileAppState.Success -> {
-                tabProgressBar.hide()
+                tabProgressBar.progressItem.hide()
                 adapter.submitList(appState.movieList)
             }
             is ProfileAppState.Error -> {
-                tabProgressBar.hide()
+                tabProgressBar.progressItem.hide()
                 historyLayout.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload)

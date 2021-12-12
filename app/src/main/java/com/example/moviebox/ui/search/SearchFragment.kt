@@ -94,13 +94,13 @@ class SearchFragment : Fragment() {
 
     private fun renderData(appState: ProfileAppState) = with(binding) {
         when (appState) {
-            ProfileAppState.Loading -> searchProgressBar.show()
+            ProfileAppState.Loading -> searchProgressBar.progressItem.show()
             is ProfileAppState.Success -> {
-                searchProgressBar.hide()
+                searchProgressBar.progressItem.hide()
                 showResult(appState.movieList)
             }
             is ProfileAppState.Error -> {
-                searchProgressBar.hide()
+                searchProgressBar.progressItem.hide()
                 searchLayout.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload)
