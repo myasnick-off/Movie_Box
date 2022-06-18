@@ -140,14 +140,14 @@ class MainFragment : Fragment() {
 
     private fun renderData(appState: AppState) = with(binding) {
         when (appState) {
-            AppState.Loading -> mainProgressBar.show()
+            AppState.Loading -> mainProgressBar.progressItem.show()
             is AppState.Success -> {
-                mainProgressBar.hide()
+                mainProgressBar.progressItem.hide()
                 movieList = appState.categoryData
                 adapter.setData(movieList as ArrayList<Category>)
             }
             is AppState.Error -> {
-                mainProgressBar.hide()
+                mainProgressBar.progressItem.hide()
                 main.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload)

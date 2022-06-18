@@ -1,5 +1,6 @@
 package com.example.moviebox.model.rest
 
+import com.example.moviebox.BuildConfig
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
@@ -9,7 +10,7 @@ object ApiUtils {
     private const val BASE_URL_VERSION = "3/"
 
     const val BASE_URL = "$BASE_URL_MAIN_PART$BASE_URL_VERSION"
-    const val API_KEY = "02aa4f3b7db68ceb4c5c389d5dee7ce4"
+    const val API_KEY = BuildConfig.API_KEY
     const val LANG = "ru"
     const val POPULARITY_SORT = "popularity.desc"
     const val VOTE_AVERAGE_SORT = "vote_average.desc"

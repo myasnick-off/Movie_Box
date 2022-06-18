@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:focusable="true"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -21,13 +21,9 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ProgressBar
+    <include
         android:id="@+id/filter_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        layout="@layout/item_progress_bar"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/filter_group"
@@ -63,39 +59,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/year_range"
-                android:textSize="@dimen/text_size_16"/>
+                android:textSize="@dimen/text_size_16" />
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/year_slider"
                 android:layout_width="match_parent"
-                android:stepSize = "1.0"
-                android:valueFrom = "1920.0"
-                android:valueTo = "2021.0"
-                app:values="@array/initial_range_values"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:stepSize="@string/year_step"
+                android:valueFrom="@string/year_from"
+                android:valueTo="@string/year_to"
+                app:values="@array/initial_range_values" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_rating_range"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/rating_range"
-                android:textSize="@dimen/text_size_16"/>
+                android:textSize="@dimen/text_size_16" />
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/rating_slider"
                 android:layout_width="match_parent"
-                android:stepSize = "0.1"
-                android:valueFrom = "0.0"
-                android:valueTo = "10.0"
-                app:values="@array/initial_rating_values"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:stepSize="@string/range_step"
+                android:valueFrom="@string/rating_from"
+                android:valueTo="@string/rating_to"
+                app:values="@array/initial_rating_values" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_genre_range"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/genres"
-                android:textSize="@dimen/text_size_16"/>
+                android:textSize="@dimen/text_size_16" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/genres_button"
@@ -117,9 +113,9 @@
                 android:id="@+id/apply_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_8"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/apply"/>
+                android:layout_marginTop="@dimen/margin_8"
+                android:text="@string/apply" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

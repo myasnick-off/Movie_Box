@@ -109,16 +109,16 @@ class FilterFragment : Fragment() {
     private fun renderData(appState: GenresAppState) = with(binding) {
         when (appState) {
             GenresAppState.Loading -> {
-                filterProgressBar.show()
+                filterProgressBar.progressItem.show()
                 filterGroup.hide()
             }
             is GenresAppState.Success -> {
-                filterProgressBar.hide()
+                filterProgressBar.progressItem.hide()
                 filterGroup.show()
                 genres = appState.genreData
             }
             is GenresAppState.Error -> {
-                filterProgressBar.hide()
+                filterProgressBar.progressItem.hide()
                 filterMain.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload)

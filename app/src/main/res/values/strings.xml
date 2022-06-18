@@ -56,6 +56,12 @@
     <string name="satellite">Satellite</string>
     <string name="normal">Normal</string>
     <string name="hybrid">Hybrid</string>
+    <string name="year_step" translatable="false">1.0</string>
+    <string name="year_from" translatable="false">1920.0</string>
+    <string name="year_to" translatable="false">2021.0</string>
+    <string name="range_step" translatable="false">0.1</string>
+    <string name="rating_from" translatable="false">0.0</string>
+    <string name="rating_to" translatable="false">10.0</string>
     <array name="initial_range_values">
         <item>1920.0</item>
         <item>2021.0</item>
