@@ -167,7 +167,7 @@ class ContactsFragment : Fragment() {
 
     // метод заполнения ListView списком контактов и отправки СМС при нажатии на один из них
     private fun fillList() = with(binding) {
-        // упаковываем список контактов в понятную для ListView-адаптера структуру
+            // упаковываем список контактов в понятную для ListView-адаптера структуру
         val data: ArrayList<Map<String, String>> = arrayListOf()
         for (i in 0 until contactList.size) {
             val map: HashMap<String, String> = hashMapOf()
