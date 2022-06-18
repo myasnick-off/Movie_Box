@@ -3,7 +3,7 @@ package com.example.moviebox
 import android.app.Application
 import androidx.room.Room
 import com.example.moviebox.di.appModule
-import com.example.moviebox.room.ProfileDataBase
+import com.example.moviebox._core.data.local.ProfileDataBase
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import java.lang.IllegalStateException
