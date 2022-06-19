@@ -1,4 +1,4 @@
-package com.example.moviebox._core.data.local
+package com.example.moviebox._core.data.local.dao
 
 import androidx.room.*
 import com.example.moviebox._core.data.local.entities.WishlistEntity

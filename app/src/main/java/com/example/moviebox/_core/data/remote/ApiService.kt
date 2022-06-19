@@ -1,5 +1,6 @@
 package com.example.moviebox._core.data.remote
 
+import com.example.moviebox.BuildConfig
 import com.example.moviebox._core.data.remote.model.GenreListDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import com.example.moviebox._core.data.remote.model.MovieListDTO
@@ -13,7 +14,7 @@ interface ApiService {
     /** Запрос списка жанров */
     @GET("genre/movie/list")
     fun getGenreList(
-        @Query("api_key") apiKey: String = ApiUtils.API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("language") lang: String = ApiUtils.LANG
     ): Call<GenreListDTO>
 //  Пример url запроса:
@@ -22,7 +23,7 @@ interface ApiService {
     /** Запрос списка фильмов по жанрам */
     @GET("discover/movie")
     fun getMovieListByGenre(
-        @Query("api_key") apiKey: String = ApiUtils.API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("language") lang: String = ApiUtils.LANG,
         @Query("sort_by") sortBy: String = ApiUtils.POPULARITY_SORT,
         @Query("include_adult") includeAdult: Boolean = false,
@@ -34,7 +35,7 @@ interface ApiService {
     /** Запрос отфильтрованного списка фильмов */
     @GET("discover/movie")
     fun getMovieListByFilter(
-        @Query("api_key") apiKey: String = ApiUtils.API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("language") language: String = ApiUtils.LANG,
         @Query("sort_by") sortBy: String = ApiUtils.POPULARITY_SORT,
         @Query("include_adult") includeAdult: Boolean = false,
@@ -51,7 +52,7 @@ interface ApiService {
     @GET("movie/{id}")
     fun getMovieDetails(
         @Path(value = "id") movieId: Long,
-        @Query("api_key") apiKey: String = ApiUtils.API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("language") lang: String = ApiUtils.LANG
     ): Call<MovieDetailsDTO>
 //  Пример url запроса:
@@ -60,7 +61,7 @@ interface ApiService {
     /** Запрос на поиск фильма по названию */
     @GET("search/movie")
     fun getMovieListByPhrase(
-        @Query("api_key") apiKey: String = ApiUtils.API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("language") language: String = ApiUtils.LANG,
         @Query("query") query: String,
         @Query("include_adult") includeAdult: Boolean = false

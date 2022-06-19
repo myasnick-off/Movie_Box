@@ -8,6 +8,9 @@ import com.example.moviebox.R
 import com.example.moviebox.databinding.FragmentProfileBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.QualifierValue
 
 class ProfileFragment : Fragment() {
 

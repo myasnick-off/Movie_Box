@@ -3,15 +3,14 @@ package com.example.moviebox.profile.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.moviebox.App.Companion.getDataBase
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.domain.LocalRepository
-import com.example.moviebox._core.data.local.LocalRepositoryImpl
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class TabViewModel(
-    private val profileRepository: LocalRepository = LocalRepositoryImpl(getDataBase())
-) : ViewModel() {
+class TabViewModel: ViewModel(), KoinComponent {
 
+    private val localRepository: LocalRepository by inject()
     private val liveData = MutableLiveData<ProfileAppState>()
 
     fun getProfileLiveData(): LiveData<ProfileAppState> = liveData
@@ -19,7 +18,7 @@ class TabViewModel(
     fun getAllHistory() {
         liveData.value = ProfileAppState.Loading
         Thread {
-            val movieList = profileRepository.getAllHistory()
+            val movieList = localRepository.getAllHistory()
             liveData.postValue(ProfileAppState.Success(movieList))
         }.start()
     }
@@ -27,7 +26,7 @@ class TabViewModel(
     fun getAllFavorite() {
         liveData.value = ProfileAppState.Loading
         Thread {
-            val movieList = profileRepository.getAllFavorite()
+            val movieList = localRepository.getAllFavorite()
             liveData.postValue(ProfileAppState.Success(movieList))
         }.start()
     }
@@ -35,7 +34,7 @@ class TabViewModel(
     fun getAllWishlist() {
         liveData.value = ProfileAppState.Loading
         Thread {
-            val movieList = profileRepository.getAllWishList()
+            val movieList = localRepository.getAllWishList()
             liveData.postValue(ProfileAppState.Success(movieList))
         }.start()
     }
@@ -43,8 +42,8 @@ class TabViewModel(
     fun deleteFromHistory(movie: MovieDTO) {
         liveData.value = ProfileAppState.Loading
         Thread {
-            profileRepository.deleteEntityFromHistory(movie)
-            val movieList = profileRepository.getAllHistory()
+            localRepository.deleteEntityFromHistory(movie)
+            val movieList = localRepository.getAllHistory()
             liveData.postValue(ProfileAppState.Success(movieList))
         }.start()
     }
@@ -52,8 +51,8 @@ class TabViewModel(
     fun deleteFromFavorite(movie: MovieDTO) {
         liveData.value = ProfileAppState.Loading
         Thread {
-            profileRepository.deleteEntityFromFavorite(movie)
-            val movieList = profileRepository.getAllFavorite()
+            localRepository.deleteEntityFromFavorite(movie)
+            val movieList = localRepository.getAllFavorite()
             liveData.postValue(ProfileAppState.Success(movieList))
         }.start()
     }
@@ -61,8 +60,8 @@ class TabViewModel(
     fun deleteFromWishlist(movie: MovieDTO) {
         liveData.value = ProfileAppState.Loading
         Thread {
-            profileRepository.deleteEntityFromWishList(movie)
-            val movieList = profileRepository.getAllWishList()
+            localRepository.deleteEntityFromWishList(movie)
+            val movieList = localRepository.getAllWishList()
             liveData.postValue(ProfileAppState.Success(movieList))
         }.start()
     }
@@ -70,7 +69,7 @@ class TabViewModel(
     fun clearHistory() {
         liveData.value = ProfileAppState.Loading
         Thread {
-            profileRepository.clearAllHistory()
+            localRepository.clearAllHistory()
             liveData.postValue(ProfileAppState.Success(arrayListOf()))
         }.start()
     }
@@ -78,7 +77,7 @@ class TabViewModel(
     fun clearFavorite() {
         liveData.value = ProfileAppState.Loading
         Thread {
-            profileRepository.clearAllFavorite()
+            localRepository.clearAllFavorite()
             liveData.postValue(ProfileAppState.Success(arrayListOf()))
         }.start()
     }
@@ -86,7 +85,7 @@ class TabViewModel(
     fun clearWishlist() {
         liveData.value = ProfileAppState.Loading
         Thread {
-            profileRepository.clearAllWishList()
+            localRepository.clearAllWishList()
             liveData.postValue(ProfileAppState.Success(arrayListOf()))
         }.start()
     }

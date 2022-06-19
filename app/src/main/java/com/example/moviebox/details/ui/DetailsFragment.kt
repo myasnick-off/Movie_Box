@@ -22,9 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class DetailsFragment : Fragment() {
 
     private val viewModel: DetailsViewModel by viewModel()
-    private val localViewModel: LocalDataViewModel by lazy {
-        ViewModelProvider(this)[LocalDataViewModel::class.java]
-    }
+    private val localViewModel: LocalDataViewModel by viewModel()
 
     private var _binding: DetailsFragmentBinding? = null
     private val binding get() = _binding!!

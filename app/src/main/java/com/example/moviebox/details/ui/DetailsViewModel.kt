@@ -5,16 +5,14 @@ import android.os.HandlerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.moviebox.App.Companion.getDataBase
-import com.example.moviebox._core.domain.RemoteRepository
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import com.example.moviebox._core.domain.LocalRepository
-import com.example.moviebox._core.data.local.LocalRepositoryImpl
+import com.example.moviebox._core.domain.RemoteRepository
 
 class DetailsViewModel(
     private val remoteRepository: RemoteRepository,
-    private val profileRepository: LocalRepository = LocalRepositoryImpl(getDataBase()),
+    private val localRepository: LocalRepository,
     handlerThread: HandlerThread = HandlerThread("saveDeleteThread")
 ) : ViewModel() {
 
@@ -29,19 +27,19 @@ class DetailsViewModel(
     fun getLiveData(): LiveData<DetailsAppState> = liveData
 
     fun saveMovieToFavorite(movieData: MovieDetailsDTO) {
-        handler.post { profileRepository.saveEntityToFavorite(convertMovieData(movieData)) }
+        handler.post { localRepository.saveEntityToFavorite(convertMovieData(movieData)) }
     }
 
     fun saveMovieToWishlist(movieData: MovieDetailsDTO) {
-        handler.post { profileRepository.saveEntityToWishList(convertMovieData(movieData)) }
+        handler.post { localRepository.saveEntityToWishList(convertMovieData(movieData)) }
     }
 
     fun deleteMovieFromFavorite(movieData: MovieDetailsDTO) {
-        handler.post { profileRepository.deleteEntityFromFavorite(convertMovieData(movieData)) }
+        handler.post { localRepository.deleteEntityFromFavorite(convertMovieData(movieData)) }
     }
 
     fun deleteMovieFromWishlist(movieData: MovieDetailsDTO) {
-        handler.post { profileRepository.deleteEntityFromWishList(convertMovieData(movieData)) }
+        handler.post { localRepository.deleteEntityFromWishList(convertMovieData(movieData)) }
     }
 
     fun getMovieDetailsFromServer(id: Long) {
@@ -51,7 +49,7 @@ class DetailsViewModel(
             if (movieData != null) {
                 liveData.postValue(DetailsAppState.Success(movieData))
                 // сохраняем данные о фильме в локальную БД
-                profileRepository.saveEntityToHistory(convertMovieData(movieData))
+                localRepository.saveEntityToHistory(convertMovieData(movieData))
             } else {
                 liveData.postValue(DetailsAppState.Error(Throwable()))
             }

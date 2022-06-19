@@ -2,6 +2,9 @@ package com.example.moviebox._core.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.moviebox._core.data.local.dao.FavoriteDao
+import com.example.moviebox._core.data.local.dao.HistoryDao
+import com.example.moviebox._core.data.local.dao.WishlistDao
 import com.example.moviebox._core.data.local.entities.FavoriteEntity
 import com.example.moviebox._core.data.local.entities.HistoryEntity
 import com.example.moviebox._core.data.local.entities.WishlistEntity
