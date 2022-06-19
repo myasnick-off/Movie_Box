@@ -1,4 +1,4 @@
-package com.example.moviebox._core.data.local
+package com.example.moviebox._core.domain
 
 import com.example.moviebox._core.data.remote.model.MovieDTO
 

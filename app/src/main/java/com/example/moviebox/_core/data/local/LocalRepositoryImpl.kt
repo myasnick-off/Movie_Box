@@ -4,6 +4,7 @@ import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.data.local.entities.FavoriteEntity
 import com.example.moviebox._core.data.local.entities.HistoryEntity
 import com.example.moviebox._core.data.local.entities.WishlistEntity
+import com.example.moviebox._core.domain.LocalRepository
 
 class LocalRepositoryImpl(private val db: ProfileDataBase) : LocalRepository {
 

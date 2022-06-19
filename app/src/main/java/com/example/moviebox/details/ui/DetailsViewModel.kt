@@ -6,14 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.moviebox.App.Companion.getDataBase
-import com.example.moviebox._core.domain.Repository
+import com.example.moviebox._core.domain.RemoteRepository
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
-import com.example.moviebox._core.data.local.LocalRepository
+import com.example.moviebox._core.domain.LocalRepository
 import com.example.moviebox._core.data.local.LocalRepositoryImpl
 
 class DetailsViewModel(
-    private val repository: Repository,
+    private val remoteRepository: RemoteRepository,
     private val profileRepository: LocalRepository = LocalRepositoryImpl(getDataBase()),
     handlerThread: HandlerThread = HandlerThread("saveDeleteThread")
 ) : ViewModel() {
@@ -47,7 +47,7 @@ class DetailsViewModel(
     fun getMovieDetailsFromServer(id: Long) {
         liveData.value = DetailsAppState.Loading
         Thread {
-            val movieData = repository.getMovieDataFromServer(id)
+            val movieData = remoteRepository.getMovieData(id)
             if (movieData != null) {
                 liveData.postValue(DetailsAppState.Success(movieData))
                 // сохраняем данные о фильме в локальную БД

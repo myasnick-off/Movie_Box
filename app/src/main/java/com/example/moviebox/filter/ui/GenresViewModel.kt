@@ -3,10 +3,10 @@ package com.example.moviebox.filter.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.moviebox._core.domain.Repository
+import com.example.moviebox._core.domain.RemoteRepository
 import com.example.moviebox._core.data.remote.model.GenreDTO
 
-class GenresViewModel(private val repository: Repository) : ViewModel() {
+class GenresViewModel(private val remoteRepository: RemoteRepository) : ViewModel() {
 
     private val liveData = MutableLiveData<GenresAppState>()
     private var genreList: List<GenreDTO>? = null    // переменная для локального хранения загруженных данных
@@ -19,7 +19,7 @@ class GenresViewModel(private val repository: Repository) : ViewModel() {
         // Если данные еще на загружались с сервера, то инициируем их загрузку в отдельном потоке
         if (!isDataLoaded) {
             Thread {
-                genreList = repository.getGenreListFromServer()?.genres
+                genreList = remoteRepository.getGenreList()?.genres
                 if (genreList != null) {                                    // в случае успешной загрузки:
                     isDataLoaded = true                                     // устанавливаем флаг наличия данных
                     liveData.postValue(GenresAppState.Success(genreList!!)) // и постим данные в liveData

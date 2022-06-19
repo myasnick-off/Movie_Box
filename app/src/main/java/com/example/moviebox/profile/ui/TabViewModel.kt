@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.moviebox.App.Companion.getDataBase
 import com.example.moviebox._core.data.remote.model.MovieDTO
-import com.example.moviebox._core.data.local.LocalRepository
+import com.example.moviebox._core.domain.LocalRepository
 import com.example.moviebox._core.data.local.LocalRepositoryImpl
 
 class TabViewModel(

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.moviebox.R
 import com.example.moviebox.databinding.FragmentSearchBinding
@@ -19,13 +18,12 @@ import com.example.moviebox._core.ui.OnItemViewClickListener
 import com.example.moviebox.details.ui.DetailsFragment
 import com.example.moviebox.profile.ui.ProfileAppState
 import com.example.moviebox.profile.ui.TabRecyclerAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
     // создаем/вызываем экземпляр SearchViewModel
-    private val viewModel: SearchViewModel by lazy {
-        ViewModelProvider(this)[SearchViewModel::class.java]
-    }
+    private val viewModel: SearchViewModel by viewModel()
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!

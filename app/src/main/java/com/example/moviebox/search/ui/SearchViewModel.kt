@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.moviebox._core.ui.model.FilterSet
-import com.example.moviebox._core.domain.Repository
-import com.example.moviebox._core.data.RepositoryImpl
+import com.example.moviebox._core.domain.RemoteRepository
+import com.example.moviebox._core.data.remote.RemoteRepositoryImpl
 import com.example.moviebox.profile.ui.ProfileAppState
 
 class SearchViewModel(
-    private val repository: Repository = RepositoryImpl()
+    private val remoteRepository: RemoteRepository
 ) : ViewModel() {
 
     private val liveData = MutableLiveData<ProfileAppState>()
@@ -19,7 +19,7 @@ class SearchViewModel(
     fun searchRequest(phrase: String, withAdult: Boolean) {
         liveData.value = ProfileAppState.Loading
         Thread {
-            val movieList = repository.searchByPhrase(phrase, withAdult)
+            val movieList = remoteRepository.searchByPhrase(phrase, withAdult)
             if (movieList != null) {
                 liveData.postValue(ProfileAppState.Success(movieList))
             }
@@ -32,7 +32,7 @@ class SearchViewModel(
     fun filterSearchRequest(filterSet: FilterSet, withAdult: Boolean) {
         liveData.value = ProfileAppState.Loading
         Thread {
-            val movieList = repository.filterSearch(filterSet, withAdult)
+            val movieList = remoteRepository.filterSearch(filterSet, withAdult)
             if (movieList != null) {
                 liveData.postValue(ProfileAppState.Success(movieList))
             }

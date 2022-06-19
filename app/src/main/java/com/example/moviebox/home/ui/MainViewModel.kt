@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.moviebox._core.ui.model.AppState
 import com.example.moviebox._core.ui.model.Category
-import com.example.moviebox._core.domain.Repository
+import com.example.moviebox._core.domain.RemoteRepository
 
-class MainViewModel(private val repository: Repository) : ViewModel() {
+class MainViewModel(private val remoteRepository: RemoteRepository) : ViewModel() {
 
     private val liveData = MutableLiveData<AppState>()
     private var categoryList: List<Category>? = null    // переменная для локального хранения загруженных данных
@@ -20,7 +20,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         // Если данные еще на загружались с сервера, то инициируем их загрузку в отдельном потоке
         if (!isDataLoaded) {
             Thread {
-                categoryList = repository.getCategoryListFromServer(withAdult)
+                categoryList = remoteRepository.getCategoryList(withAdult)
                 if (categoryList != null) {                              // в случае успешной загрузки:
                     isDataLoaded = true                                  // устанавливаем флаг наличия данных
                     liveData.postValue(AppState.Success(categoryList!!)) // и постим данные в liveData
