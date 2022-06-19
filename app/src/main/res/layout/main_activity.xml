@@ -4,5 +4,5 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="com.example.moviebox._core.ui.SuperFragment"
+    android:name="com.example.moviebox._core.ui.MainFragment"
     tools:context="._core.ui.MainActivity" />

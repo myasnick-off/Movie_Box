@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviebox.R
-import com.example.moviebox._core.ui.model.Category
 import com.example.moviebox._core.ui.OnItemViewClickListener
+import com.example.moviebox.home.domain.model.Category
 
-class MainFragmentAdapter(private val itemViewClickListener: OnItemViewClickListener) :
-    RecyclerView.Adapter<MainFragmentAdapter.MainViewHolder>() {
+class HomeFragmentAdapter(private val itemViewClickListener: OnItemViewClickListener) :
+    RecyclerView.Adapter<HomeFragmentAdapter.MainViewHolder>() {
 
     private var dataList = arrayListOf<Category>()
 
@@ -25,7 +25,7 @@ class MainFragmentAdapter(private val itemViewClickListener: OnItemViewClickList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.main_recycler_item, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.home_recycler_item, parent, false)
         return MainViewHolder(itemView)
     }
 
@@ -36,7 +36,7 @@ class MainFragmentAdapter(private val itemViewClickListener: OnItemViewClickList
     override fun getItemCount() = dataList.size
 
     inner class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val innerAdapter: InnerRecyclerAdapter
+        private val innerAdapter: InnerAdapter
         private val categoryTextView: TextView = itemView.findViewById(R.id.category_text_view)
         private val innerRecycler: RecyclerView = itemView.findViewById(R.id.inner_recycler)
 
@@ -44,7 +44,7 @@ class MainFragmentAdapter(private val itemViewClickListener: OnItemViewClickList
             val context = itemView.context
             // инициализируем вложенный горизонтальный RecyclerView
             innerRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            innerAdapter = InnerRecyclerAdapter(itemViewClickListener)
+            innerAdapter = InnerAdapter(itemViewClickListener)
             innerRecycler.adapter = innerAdapter
         }
 

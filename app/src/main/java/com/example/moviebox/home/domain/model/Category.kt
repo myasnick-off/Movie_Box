@@ -1,4 +1,4 @@
-package com.example.moviebox._core.ui.model
+package com.example.moviebox.home.domain.model
 
 import android.os.Parcelable
 import com.example.moviebox._core.data.remote.model.MovieDTO

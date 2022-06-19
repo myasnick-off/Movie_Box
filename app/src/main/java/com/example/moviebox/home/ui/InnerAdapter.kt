@@ -13,10 +13,10 @@ import com.example.moviebox._core.data.remote.ApiUtils
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.ui.OnItemViewClickListener
 
-class InnerRecyclerAdapter(
+class InnerAdapter(
     private val itemViewClickListener: OnItemViewClickListener
 ) :
-    RecyclerView.Adapter<InnerRecyclerAdapter.InnerViewHolder>() {
+    RecyclerView.Adapter<InnerAdapter.InnerViewHolder>() {
 
     private var dataList = arrayListOf<MovieDTO>()
 

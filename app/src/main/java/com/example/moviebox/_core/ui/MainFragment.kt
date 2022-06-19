@@ -7,59 +7,59 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.moviebox.R
-import com.example.moviebox.databinding.SuperFragmentBinding
-import com.example.moviebox.home.ui.MainFragment
+import com.example.moviebox.databinding.MainFragmentBinding
+import com.example.moviebox.home.ui.HomeFragment
 import com.example.moviebox.maps.ui.MapsFragment
 import com.example.moviebox.profile.ui.ProfileFragment
 import com.example.moviebox.ui.settings.SettingsFragment
 
-class SuperFragment : Fragment(), BackPressedMonitor {
+class MainFragment : Fragment(), BackPressedMonitor {
 
-    private var _binding: SuperFragmentBinding? = null
+    private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = SuperFragmentBinding.inflate(inflater, container, false)
+        _binding = MainFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.super_container, MainFragment.newInstance())
-                .commit()
+            navigateToFragment(HomeFragment.newInstance())
         }
+        initView()
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initView() {
         // обработка нажатия кнопок BottomNavigationView
         binding.bottomNavView.setOnItemSelectedListener {
             when(it.itemId) {
-                R.id.action_home -> {
-                    childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                }
-                R.id.action_profile -> {
-                    childFragmentManager.beginTransaction()
-                        .replace(R.id.super_container, ProfileFragment.newInstance())
-                        .addToBackStack("ProfileFragment")
-                        .commit()
-                }
-                R.id.action_map -> {
-                    childFragmentManager.beginTransaction()
-                        .replace(R.id.super_container, MapsFragment.newInstance())
-                        .addToBackStack("MapsFragment")
-                        .commit()
-                }
-                R.id.action_settings -> {
-                    childFragmentManager.beginTransaction()
-                        .replace(R.id.super_container, SettingsFragment.newInstance())
-                        .addToBackStack("SettingsFragment")
-                        .commit()
-                }
+                R.id.action_home -> returnToHome()
+                R.id.action_profile -> navigateToFragment(ProfileFragment.newInstance())
+                R.id.action_map ->  navigateToFragment(MapsFragment.newInstance())
+                R.id.action_settings -> navigateToFragment(SettingsFragment.newInstance())
             }
             true
         }
+    }
+
+    private fun returnToHome() {
+        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    }
+
+    private fun navigateToFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.host_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     // обработка события по нажатию кнопки "Назад" во фрагменте

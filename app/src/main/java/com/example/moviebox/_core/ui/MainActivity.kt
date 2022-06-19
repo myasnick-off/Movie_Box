@@ -13,11 +13,11 @@ class MainActivity : AppCompatActivity() {
 
     // обработка события по нажатию кнопки "Назад"
     override fun onBackPressed() {
-        val superFragment = supportFragmentManager.findFragmentById(R.id.container)
-        if (superFragment is BackPressedMonitor) {
-            // проверяем если нажатие кнопки "Назад" в супер-фрагменте вернуло false,
+        val mainFragment = supportFragmentManager.findFragmentById(R.id.container)
+        if (mainFragment is BackPressedMonitor) {
+            // проверяем если нажатие кнопки "Назад" в main-фрагменте вернуло false,
                 // то отдаем обработку кнопки "Назад" активити
-            if (!superFragment.onBackPressed()) {
+            if (!mainFragment.onBackPressed()) {
                 super.onBackPressed()
             }
         } else {

@@ -2,33 +2,37 @@ package com.example.moviebox.home.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviebox._core.ui.model.AppState
 import com.example.moviebox.R
-import com.example.moviebox.databinding.MainFragmentBinding
+import com.example.moviebox._core.data.remote.model.MovieDTO
+import com.example.moviebox._core.ui.OnItemViewClickListener
+import com.example.moviebox._core.ui.model.AppState
+import com.example.moviebox.databinding.HomeFragmentBinding
+import com.example.moviebox.details.ui.DetailsFragment
+import com.example.moviebox.filter.ui.FilterFragment
+import com.example.moviebox.home.domain.model.Category
+import com.example.moviebox.search.ui.SearchFragment
 import com.example.moviebox.utils.hide
 import com.example.moviebox.utils.show
 import com.example.moviebox.utils.showSnackBar
-import com.example.moviebox._core.ui.model.Category
-import com.example.moviebox._core.data.remote.model.MovieDTO
-import com.example.moviebox.details.ui.DetailsFragment
-import com.example.moviebox._core.ui.OnItemViewClickListener
-import com.example.moviebox.filter.ui.FilterFragment
-import com.example.moviebox.search.ui.SearchFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainFragment : Fragment() {
+class HomeFragment : Fragment() {
 
-    private val viewModel: MainViewModel by viewModel()
-    private var _binding: MainFragmentBinding? = null
+    private val viewModel: HomeViewModel by viewModel()
+
+    private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var movieList: List<Category>
-    private lateinit var adapter: MainFragmentAdapter
+    private lateinit var adapter: HomeFragmentAdapter
     private var hasAdult: Boolean = false
 
     // реализация события по нажатию на itemView фильма в RecyclerView
@@ -59,7 +63,7 @@ class MainFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = MainFragmentBinding.inflate(inflater, container, false)
+        _binding = HomeFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -69,7 +73,7 @@ class MainFragment : Fragment() {
         // инициализация основного вертикального RecyclerView
         mainRecycler
             .layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        adapter = MainFragmentAdapter(onMovieItemClickListener)
+        adapter = HomeFragmentAdapter(onMovieItemClickListener)
         mainRecycler.adapter = adapter
 
         val observer = Observer<AppState> { renderData(it) }
@@ -192,6 +196,6 @@ class MainFragment : Fragment() {
         private const val ARG_SEARCH_PHRASE = "SEARCH_PHRASE"
         private const val ARG_WITH_ADULT = "WITH_ADULT"
 
-        fun newInstance() = MainFragment()
+        fun newInstance() = HomeFragment()
     }
 }
