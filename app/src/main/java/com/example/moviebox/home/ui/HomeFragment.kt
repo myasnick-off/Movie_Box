@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviebox.R
@@ -20,6 +19,7 @@ import com.example.moviebox.filter.ui.FilterFragment
 import com.example.moviebox.home.domain.model.Category
 import com.example.moviebox.search.ui.SearchFragment
 import com.example.moviebox.utils.hide
+import com.example.moviebox.utils.navigateToFragment
 import com.example.moviebox.utils.show
 import com.example.moviebox.utils.showSnackBar
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -38,20 +38,8 @@ class HomeFragment : Fragment() {
     // реализация события по нажатию на itemView фильма в RecyclerView
     private val onMovieItemClickListener = object : OnItemViewClickListener {
         override fun onItemClicked(movieId: Long) {
-            val manager = activity?.supportFragmentManager
-            // передаем во фрагмент с деталями фильма его ID
-            manager?.let {
-                val bundle = Bundle().apply {
-                    putLong(DetailsFragment.KEY_BUNDLE, movieId)
-                }
-                manager
-                    .beginTransaction()
-                    .add(R.id.container, DetailsFragment.newInstance(bundle))
-                    .addToBackStack("detailsFragment")
-                    .commit()
-            }
+            navigateToFragment(fragment = DetailsFragment.newInstance(movieId))
         }
-
         override fun onItemLongClicked(movie: MovieDTO, view: View) {}
     }
 
@@ -67,79 +55,59 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+        initViewModel()
+        loadMovieList()
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initView() = with(binding) {
         // инициализация основного вертикального RecyclerView
         mainRecycler
             .layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         adapter = HomeFragmentAdapter(onMovieItemClickListener)
         mainRecycler.adapter = adapter
 
-        val observer = Observer<AppState> { renderData(it) }
-        viewModel.getLiveData().observe(viewLifecycleOwner, observer)
-
-        if (savedInstanceState == null) {
-            requireMovieList()
-        } else {
-            getMovieList(savedInstanceState)
-        }
-
         // обработка события по нажатию кнопок меню
         mainToolbar.inflateMenu(R.menu.menu_main)
         mainToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_filter -> {
-                    val manager = activity?.supportFragmentManager
-                    manager?.let {
-                        it.beginTransaction()
-                            .add(R.id.container, FilterFragment.newInstance(hasAdult))
-                            .addToBackStack("SearchFragment")
-                            .commit()
-                    }
+                    navigateToFragment(fragment = FilterFragment.newInstance(hasAdult))
                     true
                 }
-                else -> true
+                else -> false
             }
         }
         // инициализация меню поиска
         val searchItem = mainToolbar.menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
-        searchView.queryHint = "Search film..."
+        searchView.queryHint = getString(R.string.search_film)
         // обработка событий меню поиска
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(phrase: String?): Boolean {
-                phrase?.let {
-                    val searchBundle = Bundle().apply {
-                        putString(ARG_SEARCH_PHRASE, phrase)
-                        putBoolean(ARG_WITH_ADULT, hasAdult)
-                    }
-                    val manager = activity?.supportFragmentManager
-                    manager?.let {
-                        it.beginTransaction()
-                            .add(R.id.container, SearchFragment.newInstance(searchBundle))
-                            .addToBackStack("SearchFragment")
-                            .commit()
-                        return true
-                    }
+                phrase?.let { phraseText ->
+                    navigateToFragment(fragment =
+                        SearchFragment.newInstance(phrase = phraseText, hasAdult = hasAdult)
+                    )
+                    return true
                 }
                 return false
             }
-
             override fun onQueryTextChange(p0: String?): Boolean {
                 return true
             }
         })
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(MOVIE_LIST_SAVE_KEY, movieList as ArrayList<Category>)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun initViewModel() {
+        viewModel.getLiveData().observe(viewLifecycleOwner) { renderData(it) }
     }
 
     private fun renderData(appState: AppState) = with(binding) {
@@ -148,20 +116,20 @@ class HomeFragment : Fragment() {
             is AppState.Success -> {
                 mainProgressBar.progressItem.hide()
                 movieList = appState.categoryData
-                adapter.setData(movieList as ArrayList<Category>)
+                adapter.setData(movieList)
             }
             is AppState.Error -> {
                 mainProgressBar.progressItem.hide()
                 main.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload)
-                ) { requireMovieList() }
+                ) { loadMovieList() }
             }
         }
     }
 
     // метод запроса списков с фильмами с сервера
-    private fun requireMovieList() {
+    private fun loadMovieList() {
         // загружаем настройки приложения
         if (loadPreferences()) {            // если настройки изменились:
             viewModel.resetDataLoaded()     // сбрасывам флаг о наличии загруженных данных во viewModel
@@ -170,31 +138,21 @@ class HomeFragment : Fragment() {
         viewModel.getMovieListFromServer(hasAdult)
     }
 
-    // метод запроса списков с фильмами из bundle
-    private fun getMovieList(bundle: Bundle) {
-        movieList = bundle.getParcelableArrayList(MOVIE_LIST_SAVE_KEY)!!
-        adapter.setData(movieList as ArrayList<Category>)
-    }
-
     // метод загрузки настроек приложения из SharedPreferences
     // возвращает true если настройки изменились
     private fun loadPreferences(): Boolean {
-        activity?.let {
-            val adultSetting =
-                it.getPreferences(Context.MODE_PRIVATE).getBoolean(INCLUDE_ADULT_KEY, false)
-            if (adultSetting != hasAdult) {
-                hasAdult = adultSetting
-                return true
-            }
+        val adultSetting = requireActivity()
+            .getPreferences(Context.MODE_PRIVATE)
+            .getBoolean(INCLUDE_ADULT_KEY, false)
+        if (adultSetting != hasAdult) {
+            hasAdult = adultSetting
+            return true
         }
         return false
     }
 
     companion object {
-        private const val MOVIE_LIST_SAVE_KEY = "MOVIE_LIST_SAVE_KEY"
         private const val INCLUDE_ADULT_KEY = "ADULT_KEY"
-        private const val ARG_SEARCH_PHRASE = "SEARCH_PHRASE"
-        private const val ARG_WITH_ADULT = "WITH_ADULT"
 
         fun newInstance() = HomeFragment()
     }

@@ -11,7 +11,7 @@ import com.example.moviebox.databinding.MainFragmentBinding
 import com.example.moviebox.home.ui.HomeFragment
 import com.example.moviebox.maps.ui.MapsFragment
 import com.example.moviebox.profile.ui.ProfileFragment
-import com.example.moviebox.ui.settings.SettingsFragment
+import com.example.moviebox.settings.ui.SettingsFragment
 
 class MainFragment : Fragment(), BackPressedMonitor {
 

@@ -14,10 +14,10 @@ import com.example.moviebox.home.domain.model.Category
 class HomeFragmentAdapter(private val itemViewClickListener: OnItemViewClickListener) :
     RecyclerView.Adapter<HomeFragmentAdapter.MainViewHolder>() {
 
-    private var dataList = arrayListOf<Category>()
+    private var dataList = listOf<Category>()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: ArrayList<Category>) {
+    fun setData(data: List<Category>) {
         if (dataList != data) {
             dataList = data
         }

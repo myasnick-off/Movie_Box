@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.moviebox.R
 import com.example.moviebox.databinding.DetailsFragmentBinding
@@ -43,7 +43,7 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        movieId = arguments?.getLong(KEY_BUNDLE)
+        movieId = arguments?.getLong(ARG_MOVIE_ID)
 
         val observer = Observer<DetailsAppState> { renderData(it) }
         viewModel.getLiveData().observe(viewLifecycleOwner, observer)
@@ -171,11 +171,12 @@ class DetailsFragment : Fragment() {
     }
 
     companion object {
-        const val KEY_BUNDLE = "movie_id"
+        const val ARG_MOVIE_ID = "movie_id"
         const val KEY_DETAILS = "movie_details"
 
-        fun newInstance(bundle: Bundle): DetailsFragment {
-            return DetailsFragment().apply { arguments = bundle }
-        }
+        fun newInstance(movieId: Long) =
+            DetailsFragment().apply {
+                arguments = bundleOf(ARG_MOVIE_ID to movieId)
+            }
     }
 }

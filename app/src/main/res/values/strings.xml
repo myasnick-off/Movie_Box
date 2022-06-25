@@ -62,6 +62,14 @@
     <string name="range_step" translatable="false">0.1</string>
     <string name="rating_from" translatable="false">0.0</string>
     <string name="rating_to" translatable="false">10.0</string>
+    <string name="search_film">Search film...</string>
+    <string name="about_app">About</string>
+    <string name="attention_adult_content">Attention!!! Adult content!</string>
+    <string name="adult_age_confirm">Please confirm that you are over 18 years old?</string>
+    <string name="app_build_type">"Build type: "</string>
+    <string name="app_version">"Version: "</string>
+    <string name="app_type">"Type: "</string>
+    <string name="app_id" translatable="false">"ID: "</string>
     <array name="initial_range_values">
         <item>1920.0</item>
         <item>2021.0</item>

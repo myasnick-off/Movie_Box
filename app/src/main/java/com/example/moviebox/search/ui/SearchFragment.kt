@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,6 +19,7 @@ import com.example.moviebox._core.ui.OnItemViewClickListener
 import com.example.moviebox.details.ui.DetailsFragment
 import com.example.moviebox.profile.ui.ProfileAppState
 import com.example.moviebox.profile.ui.TabRecyclerAdapter
+import com.example.moviebox.utils.navigateToFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -38,20 +40,8 @@ class SearchFragment : Fragment() {
 
         //по короткому нажатию запускаем фрагмент с деталями фильма
         override fun onItemClicked(movieId: Long) {
-            val manager = activity?.supportFragmentManager
-            // передаем во фрагмент с деталями фильма его ID
-            manager?.let {
-                val bundle = Bundle().apply {
-                    putLong(DetailsFragment.KEY_BUNDLE, movieId)
-                }
-                manager
-                    .beginTransaction()
-                    .add(R.id.container, DetailsFragment.newInstance(bundle))
-                    .addToBackStack("detailsFragment")
-                    .commit()
-            }
+            navigateToFragment(DetailsFragment.newInstance(movieId))
         }
-
         override fun onItemLongClicked(movie: MovieDTO, view: View) {}
     }
 
@@ -128,9 +118,13 @@ class SearchFragment : Fragment() {
         private const val ARG_SEARCH_PHRASE = "SEARCH_PHRASE"
         private const val ARG_WITH_ADULT = "WITH_ADULT"
 
-        fun newInstance(bundle: Bundle) =
+        fun newInstance(phrase: String? = null, filterSet: FilterSet? = null, hasAdult: Boolean) =
             SearchFragment().apply {
-                arguments = bundle
+                arguments = bundleOf(
+                    ARG_SEARCH_PHRASE to phrase,
+                    ARG_FILTER_SET to filterSet,
+                    ARG_WITH_ADULT to hasAdult
+                )
             }
     }
 }

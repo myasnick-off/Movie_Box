@@ -94,17 +94,17 @@ class ProfileFragment : Fragment() {
         // слушатель ответа от диалогового окна очитски списка
         childFragmentManager.setFragmentResultListener(
             KEY_DELETE_DIALOG,
-            viewLifecycleOwner,
-            { _, result ->
-                val isOkPressed = result.getBoolean(ARG_OK)
-                if (isOkPressed) {
-                    when (tabSelected) {
-                        0 -> historyViewModel.clearHistory()
-                        1 -> favoriteViewModel.clearFavorite()
-                        2 -> wishlistViewModel.clearWishlist()
-                    }
+            viewLifecycleOwner
+        ) { _, result ->
+            val isOkPressed = result.getBoolean(ARG_OK)
+            if (isOkPressed) {
+                when (tabSelected) {
+                    0 -> historyViewModel.clearHistory()
+                    1 -> favoriteViewModel.clearFavorite()
+                    2 -> wishlistViewModel.clearWishlist()
                 }
-            })
+            }
+        }
     }
 
     private fun showDeleteDialog(tabNumber: Int) {

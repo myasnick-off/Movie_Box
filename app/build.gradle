@@ -69,16 +69,6 @@ android {
         viewBinding true
     }
     flavorDimensions 'version'
-    productFlavors {
-        simple {
-            dimension 'version'
-            versionNameSuffix '.spl'
-        }
-        advanced {
-            dimension 'version'
-            versionNameSuffix '.adv'
-        }
-    }
 }
 
 dependencies {

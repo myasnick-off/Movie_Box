@@ -14,6 +14,7 @@ import com.example.moviebox.utils.showSnackBar
 import com.example.moviebox._core.ui.model.FilterSet
 import com.example.moviebox._core.data.remote.model.GenreDTO
 import com.example.moviebox.search.ui.SearchFragment
+import com.example.moviebox.utils.navigateToFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FilterFragment : Fragment() {
@@ -72,38 +73,25 @@ class FilterFragment : Fragment() {
 
         // отбработчик нажатия на кнопку выбора жанров
         genresButton.setOnClickListener {
-            // запускаем диалоговое окно выбора жанров
-            GenresDialogFragment(genres).show(childFragmentManager, "GenresDialog")
+            GenresDialogFragment(genres).show(childFragmentManager, null)
         }
 
-        // отбработчик нажатия на кнопку "Применить"
+        // обработчик нажатия на кнопку "Применить"
         applyButton.setOnClickListener {
-            // создаем и заполняем Bundle флагом взрослого контента и набором настроек фильтра
-            val filterBundle = Bundle().apply {
-                putBoolean(ARG_WITH_ADULT, withAdult)
-                putParcelable(ARG_FILTER_SET, filterSet)
-            }
-            // запускаем фрагмент в результатами фильтрованного поиска
-            val manager = activity?.supportFragmentManager
-            manager?.let {
-                it.beginTransaction()
-                    .add(R.id.container, SearchFragment.newInstance(filterBundle))
-                    .addToBackStack("SearchFragment")
-                    .commit()
-            }
+            navigateToFragment(SearchFragment.newInstance(filterSet = filterSet, hasAdult = withAdult))
         }
 
         // слушатель ответа от диалогового окна выбора жанров
         childFragmentManager.setFragmentResultListener(
             KEY_GENRES_DIALOG,
-            viewLifecycleOwner,
-            { _, result ->
-                val checkedGenreList = result.getParcelableArrayList<GenreDTO>(ARG_CHECKED_GENRES)
-                checkedGenreList?.let {
-                    genresButton.text =  genreListToString(it)
-                    filterSet.genres = getGenresId(it)
-                }
-            })
+            viewLifecycleOwner
+        ) { _, result ->
+            val checkedGenreList = result.getParcelableArrayList<GenreDTO>(ARG_CHECKED_GENRES)
+            checkedGenreList?.let {
+                genresButton.text = genreListToString(it)
+                filterSet.genres = getGenresId(it)
+            }
+        }
     }
 
     private fun renderData(appState: GenresAppState) = with(binding) {
@@ -150,7 +138,6 @@ class FilterFragment : Fragment() {
 
     companion object {
         private const val ARG_WITH_ADULT = "WITH_ADULT"
-        private const val ARG_FILTER_SET = "FILTER_SET"
 
         fun newInstance(withAdult: Boolean) = FilterFragment()
             .apply {

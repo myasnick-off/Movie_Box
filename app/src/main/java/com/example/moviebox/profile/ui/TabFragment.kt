@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,7 @@ import com.example.moviebox.utils.showSnackBar
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.ui.OnItemViewClickListener
 import com.example.moviebox.details.ui.DetailsFragment
+import com.example.moviebox.utils.navigateToFragment
 
 class TabFragment : Fragment() {
 
@@ -37,18 +39,7 @@ class TabFragment : Fragment() {
 
         //по короткому нажатию запускаем фрагмент с деталями фильма
         override fun onItemClicked(movieId: Long) {
-            val manager = activity?.supportFragmentManager
-            // передаем во фрагмент с деталями фильма его ID
-            manager?.let {
-                val bundle = Bundle().apply {
-                    putLong(DetailsFragment.KEY_BUNDLE, movieId)
-                }
-                manager
-                    .beginTransaction()
-                    .add(R.id.container, DetailsFragment.newInstance(bundle))
-                    .addToBackStack("detailsFragment")
-                    .commit()
-            }
+            navigateToFragment(DetailsFragment.newInstance(movieId = movieId))
         }
         // по длинному нажатию выводим попап меню
         override fun onItemLongClicked(movie: MovieDTO, view: View) {
@@ -94,7 +85,6 @@ class TabFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-//        Toast.makeText(context, "destroy #$tabId", Toast.LENGTH_SHORT).show()
         super.onDestroyView()
         _binding = null
     }
@@ -135,11 +125,9 @@ class TabFragment : Fragment() {
     companion object {
         private const val ARG_TAB_ID = "TAB_ID"
 
-        fun newInstance(tabId: Int) =
+        fun newInstance(tabId: Int) : TabFragment =
             TabFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_TAB_ID, tabId)
-                }
+                arguments = bundleOf(ARG_TAB_ID to tabId)
             }
     }
 }

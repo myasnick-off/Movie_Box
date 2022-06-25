@@ -1,4 +1,4 @@
-package com.example.moviebox.ui.settings
+package com.example.moviebox.settings.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -101,7 +101,6 @@ class SettingsFragment : Fragment() {
         result.append(getString(R.string.app_id) + BuildConfig.APPLICATION_ID + "\n")
         result.append(getString(R.string.app_version) + BuildConfig.VERSION_NAME + "\n")
         result.append(getString(R.string.app_build_type) + BuildConfig.BUILD_TYPE + "\n")
-        result.append(getString(R.string.app_type) + BuildConfig.FLAVOR + "\n")
         return result.toString()
     }
 
