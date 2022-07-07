@@ -1,7 +1,5 @@
 package com.example.moviebox.details.ui
 
-import android.os.Handler
-import android.os.HandlerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,32 +13,29 @@ import kotlinx.coroutines.launch
 class DetailsViewModel(
     private val movieDetailsUseCase: MovieDetailsUseCase,
     private val localRepository: LocalRepository,
-    handlerThread: HandlerThread = HandlerThread("saveDeleteThread")
 ) : ViewModel() {
 
-    init {
-        handlerThread.start()
-    }
 
-    private val handler = Handler(handlerThread.looper)
     private val liveData = MutableLiveData<DetailsAppState>()
 
     fun getLiveData(): LiveData<DetailsAppState> = liveData
 
     fun saveMovieToFavorite(movieData: MovieDetailsDTO) {
-        handler.post { localRepository.saveEntityToFavorite(convertMovieData(movieData)) }
+        viewModelScope.launch {
+            localRepository.saveEntityToFavorite(convertMovieData(movieData))
+        }
     }
 
     fun saveMovieToWishlist(movieData: MovieDetailsDTO) {
-        handler.post { localRepository.saveEntityToWishList(convertMovieData(movieData)) }
+        viewModelScope.launch { localRepository.saveEntityToWishList(convertMovieData(movieData)) }
     }
 
     fun deleteMovieFromFavorite(movieData: MovieDetailsDTO) {
-        handler.post { localRepository.deleteEntityFromFavorite(convertMovieData(movieData)) }
+        viewModelScope.launch { localRepository.deleteEntityFromFavorite(convertMovieData(movieData)) }
     }
 
     fun deleteMovieFromWishlist(movieData: MovieDetailsDTO) {
-        handler.post { localRepository.deleteEntityFromWishList(convertMovieData(movieData)) }
+        viewModelScope.launch { localRepository.deleteEntityFromWishList(convertMovieData(movieData)) }
     }
 
     fun getMovieDetailsFromServer(movieId: Long) {
@@ -52,6 +47,7 @@ class DetailsViewModel(
                 }
                 .onSuccess { data ->
                     liveData.value = DetailsAppState.Success(movieData = data)
+                    localRepository.saveEntityToHistory(convertMovieData(data = data))
                 }
         }
     }

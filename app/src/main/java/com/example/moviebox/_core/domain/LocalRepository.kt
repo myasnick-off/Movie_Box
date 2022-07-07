@@ -3,23 +3,23 @@ package com.example.moviebox._core.domain
 import com.example.moviebox._core.data.remote.model.MovieDTO
 
 interface LocalRepository {
-    fun getAllHistory(): List<MovieDTO>
-    fun getAllFavorite(): List<MovieDTO>
-    fun getAllWishList(): List<MovieDTO>
+    suspend fun getAllHistory(): List<MovieDTO>
+    suspend fun getAllFavorite(): List<MovieDTO>
+    suspend fun getAllWishList(): List<MovieDTO>
 
-    fun saveEntityToHistory(movie: MovieDTO)
-    fun saveEntityToFavorite(movie: MovieDTO)
-    fun saveEntityToWishList(movie: MovieDTO)
+    suspend fun saveEntityToHistory(movie: MovieDTO)
+    suspend fun saveEntityToFavorite(movie: MovieDTO)
+    suspend fun saveEntityToWishList(movie: MovieDTO)
 
-    fun deleteEntityFromHistory(movie: MovieDTO)
-    fun deleteEntityFromFavorite(movie: MovieDTO)
-    fun deleteEntityFromWishList(movie: MovieDTO)
+    suspend fun deleteEntityFromHistory(movie: MovieDTO)
+    suspend fun deleteEntityFromFavorite(movie: MovieDTO)
+    suspend fun deleteEntityFromWishList(movie: MovieDTO)
 
-    fun clearAllHistory()
-    fun clearAllFavorite()
-    fun clearAllWishList()
+    suspend fun clearAllHistory()
+    suspend fun clearAllFavorite()
+    suspend fun clearAllWishList()
 
-    fun checkMovieInHistory(id: Long): Boolean
-    fun checkMovieInFavorite(id: Long): Boolean
-    fun checkMovieInWishlist(id: Long): Boolean
+    suspend fun checkMovieInHistory(id: Long): Boolean
+    suspend fun checkMovieInFavorite(id: Long): Boolean
+    suspend fun checkMovieInWishlist(id: Long): Boolean
 }

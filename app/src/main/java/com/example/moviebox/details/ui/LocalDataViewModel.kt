@@ -3,7 +3,9 @@ package com.example.moviebox.details.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.moviebox._core.domain.LocalRepository
+import kotlinx.coroutines.launch
 
 class LocalDataViewModel(
     private val localRepository: LocalRepository
@@ -15,10 +17,10 @@ class LocalDataViewModel(
 
     fun checkInLocalDB(movieId: Long) {
         liveData.value = LocalDataAppState.Loading
-        Thread {
+        viewModelScope.launch {
             val hasInFavorite = localRepository.checkMovieInFavorite(movieId)
             val hasInWishlist = localRepository.checkMovieInWishlist(movieId)
-            liveData.postValue(LocalDataAppState.Success(listOf(hasInFavorite, hasInWishlist)))
+            liveData.value = LocalDataAppState.Success(listOf(hasInFavorite, hasInWishlist))
         }.start()
     }
 }
