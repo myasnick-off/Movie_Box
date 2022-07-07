@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager
 import com.example.moviebox.R
 import com.example.moviebox.databinding.MainFragmentBinding
 import com.example.moviebox.home.ui.HomeFragment
-import com.example.moviebox.maps.ui.MapsFragment
 import com.example.moviebox.profile.ui.ProfileFragment
 import com.example.moviebox.settings.ui.SettingsFragment
 
@@ -44,7 +43,6 @@ class MainFragment : Fragment(), BackPressedMonitor {
             when(it.itemId) {
                 R.id.action_home -> returnToHome()
                 R.id.action_profile -> navigateToFragment(ProfileFragment.newInstance())
-                R.id.action_map ->  navigateToFragment(MapsFragment.newInstance())
                 R.id.action_settings -> navigateToFragment(SettingsFragment.newInstance())
             }
             true
