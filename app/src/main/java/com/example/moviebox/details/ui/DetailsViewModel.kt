@@ -5,13 +5,15 @@ import android.os.HandlerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import com.example.moviebox._core.domain.LocalRepository
-import com.example.moviebox._core.domain.RemoteRepository
+import com.example.moviebox.details.domain.MovieDetailsUseCase
+import kotlinx.coroutines.launch
 
 class DetailsViewModel(
-    private val remoteRepository: RemoteRepository,
+    private val movieDetailsUseCase: MovieDetailsUseCase,
     private val localRepository: LocalRepository,
     handlerThread: HandlerThread = HandlerThread("saveDeleteThread")
 ) : ViewModel() {
@@ -20,7 +22,6 @@ class DetailsViewModel(
         handlerThread.start()
     }
 
-    private val hd = handlerThread
     private val handler = Handler(handlerThread.looper)
     private val liveData = MutableLiveData<DetailsAppState>()
 
@@ -42,18 +43,17 @@ class DetailsViewModel(
         handler.post { localRepository.deleteEntityFromWishList(convertMovieData(movieData)) }
     }
 
-    fun getMovieDetailsFromServer(id: Long) {
+    fun getMovieDetailsFromServer(movieId: Long) {
         liveData.value = DetailsAppState.Loading
-        Thread {
-            val movieData = remoteRepository.getMovieData(id)
-            if (movieData != null) {
-                liveData.postValue(DetailsAppState.Success(movieData))
-                // сохраняем данные о фильме в локальную БД
-                localRepository.saveEntityToHistory(convertMovieData(movieData))
-            } else {
-                liveData.postValue(DetailsAppState.Error(Throwable()))
-            }
-        }.start()
+        viewModelScope.launch {
+            movieDetailsUseCase(movieId = movieId)
+                .onFailure { error ->
+                    liveData.value = DetailsAppState.Error(error = error)
+                }
+                .onSuccess { data ->
+                    liveData.value = DetailsAppState.Success(movieData = data)
+                }
+        }
     }
 
     private fun convertMovieData(data: MovieDetailsDTO): MovieDTO {
@@ -65,10 +65,5 @@ class DetailsViewModel(
             data.voteAverage,
             data.adult
         )
-    }
-
-    override fun onCleared() {
-        hd.quit()
-        super.onCleared()
     }
 }

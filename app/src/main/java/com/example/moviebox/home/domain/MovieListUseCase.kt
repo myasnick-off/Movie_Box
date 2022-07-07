@@ -5,31 +5,18 @@ import com.example.moviebox.home.domain.model.Category
 
 class MovieListUseCase(private val remoteRepository: RemoteRepository) {
 
-    operator fun invoke(withAdult: Boolean): List<Category>? {
-        // создаем пустой массив со списками фильмов по жанрам
-        val categoryList = mutableListOf<Category>()
-
+    suspend operator fun invoke(withAdult: Boolean): Result<List<Category>> {
         // получаем с сервера список жанров (id жанров и их названия)
-        val genreList = remoteRepository.getGenreList()
-
-        // заполяем массив со списками фильмов по жанрам в соответсвии со списком жанров, полученном с сервера
-        genreList?.let {
-            for (i in 0 until it.genres.size) {
-                val genre = it.genres[i]
-                val movieList =
-                    remoteRepository.getMovieListByGenre(withAdult = withAdult, genreId = genre.id)
-                movieList?.let {
-                    categoryList.add(
-                        Category(
-                            genre.id,
-                            genre.name,
-                            movieList.results
-                        )
-                    )
-                }
+        // и заполняем список списками фильмов по жанрам
+        return remoteRepository.getGenreList().map { genreList ->
+            val movieListByCategory = mutableListOf<Category>()
+            for (genre in genreList.genres) {
+                remoteRepository.getMovieListByGenre(withAdult = withAdult, genreId = genre.id)
+                    .onSuccess { movieList ->
+                        movieListByCategory.add(Category(genre.id, genre.name, movieList.results))
+                    }
             }
-            if (categoryList.isNotEmpty()) return categoryList
+            movieListByCategory
         }
-        return null
     }
 }

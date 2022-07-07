@@ -52,7 +52,8 @@ class MainFragment : Fragment(), BackPressedMonitor {
     }
 
     private fun returnToHome() {
-        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        childFragmentManager.popBackStack()
+        navigateToFragment(HomeFragment.newInstance())
     }
 
     private fun navigateToFragment(fragment: Fragment) {
