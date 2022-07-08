@@ -48,4 +48,11 @@
     <string name="satellite">Спутник</string>
     <string name="normal">Схема</string>
     <string name="hybrid">Гибрид</string>
+    <string name="attention_adult_content">Внимание!!! Взрослый контент!</string>
+    <string name="adult_age_confirm">Пожалуйста подтвердите, что Вам уже исполнилось 18 лет?</string>
+    <string name="about_app">О приложении</string>
+    <string name="app_build_type">"Тип сборки: "</string>
+    <string name="app_version">"Версия: "</string>
+    <string name="app_type">"Тип: "</string>
+    <string name="search_film">Поиск фильма...</string>
 </resources>

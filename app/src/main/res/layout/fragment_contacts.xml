@@ -9,7 +9,7 @@
     android:focusable="true"
     android:orientation="vertical"
     android:padding="@dimen/margin_4"
-    tools:context=".ui.contacts.ContactsFragment">
+    tools:context=".contacts.ui.ContactsFragment">
 
     <TextView
         android:layout_width="match_parent"

@@ -2,8 +2,12 @@ package com.example.moviebox
 
 import android.app.Application
 import androidx.room.Room
-import com.example.moviebox.di.appModule
-import com.example.moviebox.room.ProfileDataBase
+import com.example.moviebox._core.di.appModule
+import com.example.moviebox._core.data.local.ProfileDataBase
+import com.example.moviebox.details.di.detailsModule
+import com.example.moviebox.filter.di.filterModule
+import com.example.moviebox.home.di.homeModule
+import com.example.moviebox.search.di.searchModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import java.lang.IllegalStateException
@@ -11,33 +15,16 @@ import java.lang.IllegalStateException
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        appInstance = this
 
         startKoin {
             androidContext(this@App)
-            modules(appModule)
-        }
-    }
-
-    companion object {
-        private var appInstance: App? = null
-        private var db: ProfileDataBase? = null
-        private const val DB_NAME = "Profile.db"
-
-        fun getDataBase(): ProfileDataBase {
-            if (db == null) {
-                synchronized(ProfileDataBase::class.java) {
-                    if (db == null) {
-                        if (appInstance == null) throw IllegalStateException("Application is null while creating DataBase")
-                    db = Room.databaseBuilder(
-                        appInstance!!.applicationContext,
-                        ProfileDataBase::class.java,
-                        DB_NAME
-                    ).build()
-                    }
-                }
-            }
-            return db!!
+            modules(
+                appModule,
+                homeModule,
+                detailsModule,
+                filterModule,
+                searchModule,
+            )
         }
     }
 }
