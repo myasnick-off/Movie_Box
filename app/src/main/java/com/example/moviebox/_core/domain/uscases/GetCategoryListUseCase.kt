@@ -1,9 +1,9 @@
-package com.example.moviebox.home.domain
+package com.example.moviebox._core.domain.uscases
 
 import com.example.moviebox._core.domain.RemoteRepository
 import com.example.moviebox.home.domain.model.Category
 
-class MovieListUseCase(private val remoteRepository: RemoteRepository) {
+class GetCategoryListUseCase(private val remoteRepository: RemoteRepository) {
 
     suspend operator fun invoke(withAdult: Boolean): Result<List<Category>> {
         // получаем с сервера список жанров (id жанров и их названия)

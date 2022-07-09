@@ -81,7 +81,7 @@ interface ApiService {
         private const val BASE_URL_VERSION = "3/"
         private const val BASE_URL = "${BASE_URL_MAIN_PART}${BASE_URL_VERSION}"
 
-        fun newInstance(client: OkHttpClient): ApiService {
+        fun getInstance(client: OkHttpClient): ApiService {
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

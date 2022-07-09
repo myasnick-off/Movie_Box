@@ -2,18 +2,17 @@ package com.example.moviebox.home.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.lifecycleScope
 import com.example.moviebox.R
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.ui.OnItemViewClickListener
-import com.example.moviebox._core.ui.model.AppState
+import com.example.moviebox._core.ui.store.MainStore
+import com.example.moviebox._core.ui.store.MainStoreHolder
 import com.example.moviebox.databinding.HomeFragmentBinding
 import com.example.moviebox.details.ui.DetailsFragment
 import com.example.moviebox.filter.ui.FilterFragment
@@ -23,29 +22,39 @@ import com.example.moviebox.utils.hide
 import com.example.moviebox.utils.navigateToFragment
 import com.example.moviebox.utils.show
 import com.example.moviebox.utils.showSnackBar
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+
 
 class HomeFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by viewModel()
+    private val viewModel: HomeViewModel by viewModel { parametersOf(mainStore) }
+
+    private var storeHolder: MainStoreHolder? = null
+    private val mainStore: MainStore by lazy {
+        storeHolder?.mainStore ?: throw NullPointerException()
+    }
 
     private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var movieList: List<Category>
-    private lateinit var adapter: HomeFragmentAdapter
-    private var hasAdult: Boolean = false
-
     // реализация события по нажатию на itemView фильма в RecyclerView
     private val onMovieItemClickListener = object : OnItemViewClickListener {
         override fun onItemClicked(movieId: Long) {
-            navigateToFragment(fragment = DetailsFragment.newInstance(movieId))
+            navigateToFragment(fragment = DetailsFragment.newInstance(movieId = movieId))
         }
         override fun onItemLongClicked(movie: MovieDTO, view: View) {}
     }
+    private val adapter: HomeFragmentAdapter = HomeFragmentAdapter(onMovieItemClickListener)
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        storeHolder = context as MainStoreHolder
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("###", "HomeFragment created")
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -53,58 +62,35 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        Log.d("###", "HomeFragment on Create View")
         _binding = HomeFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d("###", "HomeFragment on View Created")
         super.onViewCreated(view, savedInstanceState)
         initView()
-        initViewModel()
-        loadMovieList()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d("###", "HomeFragment started")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("###", "HomeFragment resumed")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d("###", "HomeFragment paused")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d("###", "HomeFragment stopped")
+        initStore()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        Log.d("###", "HomeFragment onDestroyView")
     }
 
     private fun initView() = with(binding) {
-        // инициализация основного вертикального RecyclerView
-        mainRecycler
-            .layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        adapter = HomeFragmentAdapter(onMovieItemClickListener)
         mainRecycler.adapter = adapter
-
+        binding.swipeRefresh.apply {
+            setOnRefreshListener {
+                isRefreshing = false
+                loadMovieList()
+            }
+        }
         // обработка события по нажатию кнопок меню
         mainToolbar.inflateMenu(R.menu.menu_main)
         mainToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_filter -> {
-                    navigateToFragment(fragment = FilterFragment.newInstance(hasAdult))
+                    navigateToFragment(fragment = FilterFragment.newInstance())
                     true
                 }
                 else -> false
@@ -118,9 +104,7 @@ class HomeFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(phrase: String?): Boolean {
                 phrase?.let { phraseText ->
-                    navigateToFragment(fragment =
-                        SearchFragment.newInstance(phrase = phraseText, hasAdult = hasAdult)
-                    )
+                    navigateToFragment(fragment = SearchFragment.newInstance(phrase = phraseText))
                     return true
                 }
                 return false
@@ -131,53 +115,76 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun initViewModel() {
-        viewModel.getLiveData().observe(viewLifecycleOwner) { renderData(it) }
+    private fun initStore() {
+        mainStore.state.onEach(::renderStoreState).launchIn(viewLifecycleOwner.lifecycleScope)
+        mainStore.effect.onEach(::renderStoreEffect).launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
-    private fun renderData(appState: AppState) = with(binding) {
-        when (appState) {
-            AppState.Loading -> mainProgressBar.progressItem.show()
-            is AppState.Success -> {
-                mainProgressBar.progressItem.hide()
-                movieList = appState.categoryData
-                adapter.setData(movieList)
-            }
-            is AppState.Error -> {
-                mainProgressBar.progressItem.hide()
-                main.showSnackBar(
-                    getString(R.string.error),
-                    getString(R.string.reload)
-                ) { loadMovieList() }
-            }
+    private fun renderStoreState(state: MainStore.State) {
+        when (state) {
+            MainStore.State.Empty -> showNothing()
+            MainStore.State.Loading -> showLoading()
+            is MainStore.State.Data -> showContent(data = state.data)
+            is MainStore.State.Error -> showError()
+            is MainStore.State.Reloading -> showReloading()
         }
     }
 
-    // метод запроса списков с фильмами с сервера
+    private fun renderStoreEffect(effect: MainStore.Effect) {
+        when (effect) {
+            is MainStore.Effect.Error -> showErrorSnackBar()
+            else -> {}
+        }
+    }
+
+    private fun showNothing() {
+        binding.progressBar.root.hide()
+        binding.mainRecycler.hide()
+        binding.errorImage.hide()
+    }
+
+    private fun showLoading() {
+        binding.progressBar.root.show()
+        binding.mainRecycler.hide()
+        binding.errorImage.hide()
+    }
+
+    private fun showError() {
+        binding.progressBar.root.hide()
+        binding.mainRecycler.hide()
+        binding.errorImage.show()
+    }
+
+    private fun showContent(data: List<Category>) {
+        binding.progressBar.root.hide()
+        binding.errorImage.hide()
+        binding.mainRecycler.show()
+        adapter.setData(data = data)
+    }
+
+    private fun showReloading() {
+        binding.progressBar.root.show()
+        binding.mainRecycler.show()
+        binding.errorImage.hide()
+    }
+
     private fun loadMovieList() {
-        // загружаем настройки приложения
-        if (loadPreferences()) {            // если настройки изменились:
-            viewModel.resetDataLoaded()     // сбрасывам флаг о наличии загруженных данных во viewModel
-        }
-        // отправляем зарпос на сервер
-        viewModel.getMovieListFromServer(hasAdult)
+        viewModel.loadData(withAdult = getAdultSettings())
     }
 
-    // метод загрузки настроек приложения из SharedPreferences
-    // возвращает true если настройки изменились
-    private fun loadPreferences(): Boolean {
-        val adultSetting = requireActivity()
-            .getPreferences(Context.MODE_PRIVATE)
-            .getBoolean(INCLUDE_ADULT_KEY, false)
-        if (adultSetting != hasAdult) {
-            hasAdult = adultSetting
-            return true
-        }
-        return false
+    private fun showErrorSnackBar() {
+        binding.root.showSnackBar(
+            getString(R.string.error),
+            getString(R.string.reload)
+        ) { loadMovieList() }
+    }
+
+    private fun getAdultSettings(): Boolean {
+        return requireActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(ADULT_KEY, false)
     }
 
     companion object {
-        private const val INCLUDE_ADULT_KEY = "ADULT_KEY"
+        private const val ADULT_KEY = "adult_key"
 
         fun newInstance() = HomeFragment()
     }

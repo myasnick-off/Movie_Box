@@ -18,7 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.example.moviebox.R
 import com.example.moviebox.databinding.FragmentContactsBinding
-import com.example.moviebox._core.ui.model.Contact
+import com.example.moviebox.contacts.ui.model.Contact
 import com.example.moviebox._core.data.remote.model.GenreDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import java.lang.StringBuilder

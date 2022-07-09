@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moviebox._core.ui.model.FilterSet
-import com.example.moviebox._core.domain.RemoteRepository
-import com.example.moviebox._core.data.remote.RemoteRepositoryImpl
-import com.example.moviebox.details.ui.DetailsAppState
+import com.example.moviebox.filter.ui.model.FilterSet
 import com.example.moviebox.profile.ui.ProfileAppState
 import com.example.moviebox.search.domain.FilterUseCase
 import com.example.moviebox.search.domain.SearchUseCase
