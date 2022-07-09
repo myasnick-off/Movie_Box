@@ -1,4 +1,4 @@
-package com.example.moviebox._core.ui.model
+package com.example.moviebox.contacts.ui.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

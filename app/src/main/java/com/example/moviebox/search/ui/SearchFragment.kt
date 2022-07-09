@@ -13,7 +13,7 @@ import com.example.moviebox.databinding.FragmentSearchBinding
 import com.example.moviebox.utils.hide
 import com.example.moviebox.utils.show
 import com.example.moviebox.utils.showSnackBar
-import com.example.moviebox._core.ui.model.FilterSet
+import com.example.moviebox.filter.ui.model.FilterSet
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.ui.OnItemViewClickListener
 import com.example.moviebox.details.ui.DetailsFragment
@@ -81,13 +81,13 @@ class SearchFragment : Fragment() {
 
     private fun renderData(appState: ProfileAppState) = with(binding) {
         when (appState) {
-            ProfileAppState.Loading -> searchProgressBar.progressItem.show()
+            ProfileAppState.Loading -> searchProgressBar.root.show()
             is ProfileAppState.Success -> {
-                searchProgressBar.progressItem.hide()
+                searchProgressBar.root.hide()
                 showResult(appState.movieList)
             }
             is ProfileAppState.Error -> {
-                searchProgressBar.progressItem.hide()
+                searchProgressBar.root.hide()
                 searchLayout.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload)
@@ -118,12 +118,11 @@ class SearchFragment : Fragment() {
         private const val ARG_SEARCH_PHRASE = "SEARCH_PHRASE"
         private const val ARG_WITH_ADULT = "WITH_ADULT"
 
-        fun newInstance(phrase: String? = null, filterSet: FilterSet? = null, hasAdult: Boolean) =
+        fun newInstance(phrase: String? = null, filterSet: FilterSet? = null) =
             SearchFragment().apply {
                 arguments = bundleOf(
                     ARG_SEARCH_PHRASE to phrase,
-                    ARG_FILTER_SET to filterSet,
-                    ARG_WITH_ADULT to hasAdult
+                    ARG_FILTER_SET to filterSet
                 )
             }
     }

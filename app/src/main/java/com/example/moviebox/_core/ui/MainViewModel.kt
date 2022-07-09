@@ -1,4 +1,4 @@
-package com.example.moviebox.home.ui
+package com.example.moviebox._core.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+class MainViewModel(
     private val store: MainStore,
     private val getCategoryListUseCase: GetCategoryListUseCase
-    ) : ViewModel() {
+) : ViewModel() {
 
     private var withAdult: Boolean = false
 

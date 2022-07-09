@@ -1,11 +1,10 @@
 package com.example.moviebox._core.data.remote
 
 import com.example.moviebox._core.data.remote.model.GenreListDTO
-import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import com.example.moviebox._core.data.remote.model.MovieListDTO
 import com.example.moviebox._core.domain.RemoteRepository
-import com.example.moviebox._core.ui.model.FilterSet
+import com.example.moviebox.filter.ui.model.FilterSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException

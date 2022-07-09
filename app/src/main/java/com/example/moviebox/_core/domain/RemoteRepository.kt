@@ -1,11 +1,9 @@
 package com.example.moviebox._core.domain
 
 import com.example.moviebox._core.data.remote.model.GenreListDTO
-import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import com.example.moviebox._core.data.remote.model.MovieListDTO
-import com.example.moviebox._core.ui.model.FilterSet
-import retrofit2.Response
+import com.example.moviebox.filter.ui.model.FilterSet
 
 interface RemoteRepository {
 

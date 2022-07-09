@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviebox._core.domain.RemoteRepository
 import com.example.moviebox._core.data.remote.model.GenreDTO
+import com.example.moviebox.filter.ui.model.GenresAppState
 import kotlinx.coroutines.launch
 
 class GenresViewModel(private val remoteRepository: RemoteRepository) : ViewModel() {

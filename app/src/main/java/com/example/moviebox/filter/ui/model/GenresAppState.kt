@@ -1,4 +1,4 @@
-package com.example.moviebox.filter.ui
+package com.example.moviebox.filter.ui.model
 
 import com.example.moviebox._core.data.remote.model.GenreDTO
 
