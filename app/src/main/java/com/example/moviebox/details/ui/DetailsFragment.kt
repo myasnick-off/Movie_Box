@@ -155,7 +155,7 @@ class DetailsFragment : Fragment() {
 //            .load(posterUrl)
 //            .into(imgPoster)
 
-        detailsGroup.show()
+//        detailsGroup.show()
         if (!movieData.adult) imageAdult.hide()
     }
 
