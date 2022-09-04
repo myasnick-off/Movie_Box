@@ -1,6 +1,6 @@
 package com.example.moviebox._core.ui.store
 
-import com.example.moviebox.home.domain.model.Category
+import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MainStore : CoroutineScope by MainScope() {
+class AppStore : CoroutineScope by MainScope() {
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Empty)
     val state = _state.asStateFlow()
@@ -18,69 +18,74 @@ class MainStore : CoroutineScope by MainScope() {
     val effect = _effect.asSharedFlow()
 
     fun dispatch(event: Event) {
-        val oldState = state.value
-        val newState = reduce(event = event, oldState = oldState)
-        if (oldState != newState) {
+        val currentState = state.value
+        val newState = reduce(event = event, currentState = currentState)
+        if (currentState != newState) {
             _state.value = newState
         }
     }
 
-    private fun reduce(event: Event, oldState: State): State {
+    private fun reduce(event: Event, currentState: State): State {
         return when(event) {
-            Event.Refresh -> {
-                when(oldState) {
+            is Event.Refresh -> {
+                when(currentState) {
                     is State.Empty, is State.Error -> {
-                        launch { _effect.emit(Effect.Load) }
+                        launch { _effect.emit(Effect.LoadData) }
                         State.Loading
                     }
                     is State.Data -> {
-                        launch { _effect.emit(Effect.Load) }
-                        State.Reloading(data = oldState.data)
+                        launch { _effect.emit(Effect.LoadData) }
+                        State.Refreshing(data = currentState.data)
                     }
-                    else -> oldState
+                    else -> currentState
                 }
             }
-            is Event.Error -> {
-                when(oldState) {
+            is Event.LoadMore -> {
+                currentState
+            }
+            is Event.ErrorReceived -> {
+                when(currentState) {
                     is State.Loading -> {
                         launch { _effect.emit(Effect.Error(message = event.message)) }
                         State.Error(message = event.message)
                     }
-                    is State.Reloading -> {
+                    is State.Refreshing -> {
                         launch { _effect.emit(Effect.Error(message = event.message)) }
-                        State.Data(data = oldState.data)
+                        State.Data(data = currentState.data)
                     }
-                    else -> oldState
+                    else -> currentState
                 }
             }
-            is Event.Success -> {
-                when(oldState) {
-                    is State.Loading, is State.Reloading -> {
+            is Event.DataReceived -> {
+                when(currentState) {
+                    is State.Loading, is State.Refreshing -> {
                         State.Data(data = event.data)
                     }
-                    else -> oldState
+                    else -> currentState
                 }
             }
+
         }
     }
 
-
     sealed class Event {
         object Refresh : Event()
-        data class Success( val data: List<Category>) : Event()
-        data class Error(val message: String) : Event()
+        data class LoadMore(val data: List<MovieItem>): Event()
+        data class DataReceived(val data: List<MovieItem>) : Event()
+        data class ErrorReceived(val message: String) : Event()
     }
 
     sealed class State {
         object Empty : State()
         object Loading : State()
+        data class MoreLoading(val data: List<MovieItem>) : State()
+        data class Refreshing(val data: List<MovieItem>) : State()
         data class Error(val message: String) : State()
-        data class Data(val data: List<Category>) : State()
-        data class Reloading(val data: List<Category>) : State()
+        data class Data(val data: List<MovieItem>) : State()
     }
 
     sealed class Effect() {
         data class Error(val message: String) : Effect()
-        object Load: Effect()
+        object LoadData: Effect()
     }
 }

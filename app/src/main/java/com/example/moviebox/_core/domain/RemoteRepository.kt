@@ -7,7 +7,7 @@ import com.example.moviebox.filter.ui.model.FilterSet
 
 interface RemoteRepository {
 
-    suspend fun getMovieData(id: Long): Result<MovieDetailsDTO>
+    suspend fun getMovieData(movieId: Long): Result<MovieDetailsDTO>
     suspend fun getMovieListByGenre(withAdult: Boolean, genreId: Int): Result<MovieListDTO>
     suspend fun getGenreList(): Result<GenreListDTO>
     suspend fun searchByPhrase(phrase: String, withAdult: Boolean): Result<MovieListDTO>

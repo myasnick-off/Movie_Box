@@ -2,47 +2,71 @@ package com.example.moviebox.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moviebox._core.domain.uscases.GetCategoryListUseCase
-import com.example.moviebox._core.ui.store.MainStore
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import com.example.moviebox._core.domain.mapper.DtoToUiMapper
+import com.example.moviebox._core.domain.uscases.GetMovieListUseCase
+import com.example.moviebox._core.ui.model.ListViewState
+import com.example.moviebox._core.ui.store.AppStore
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val store: MainStore,
-    private val getCategoryListUseCase: GetCategoryListUseCase
-    ) : ViewModel() {
+    private val store: AppStore,
+    private val dtoToUiMapper: DtoToUiMapper,
+    private val categoryListMapper: CategoryListMapper,
+    private val getMovieListUseCase: GetMovieListUseCase
+) : ViewModel() {
+
+    private val _viewState: MutableStateFlow<ListViewState> = MutableStateFlow(ListViewState.Empty)
+    val viewState = _viewState.asStateFlow()
+
+    private val _viewEffect: MutableSharedFlow<String> = MutableSharedFlow()
+    val viewEffect = _viewEffect.asSharedFlow()
 
     private var withAdult: Boolean = false
 
     init {
+        store.state.onEach(::renderStoreState).launchIn(viewModelScope)
         store.effect.onEach(::renderStoreEffect).launchIn(viewModelScope)
     }
 
-    fun loadData(withAdult: Boolean) {
-        this.withAdult = withAdult
-        store.dispatch(event = MainStore.Event.Refresh)
-    }
-
-    private fun renderStoreEffect(storeEffect: MainStore.Effect) {
-        when(storeEffect) {
-            MainStore.Effect.Load -> getCategoryListFromServer()
+    private fun renderStoreState(state: AppStore.State) {
+        when (state) {
+            is AppStore.State.Empty, is AppStore.State.Loading -> _viewState.value = ListViewState.Loading
+            is AppStore.State.Data -> _viewState.value = ListViewState.Data(data = categoryListMapper(state.data))
+            is AppStore.State.Error -> _viewState.value = ListViewState.Error(message = state.message)
+            is AppStore.State.Refreshing -> _viewState.value = ListViewState.Refreshing(data = categoryListMapper(state.data))
             else -> {}
         }
     }
 
-    private fun getCategoryListFromServer() {
+    private fun renderStoreEffect(storeEffect: AppStore.Effect) {
+        when(storeEffect) {
+            is AppStore.Effect.LoadData -> getMovieListFromServer()
+            is AppStore.Effect.Error -> emitMessage(storeEffect.message)
+        }
+    }
+
+    private fun emitMessage(message: String) {
+        viewModelScope.launch { _viewEffect.emit(value = message) }
+    }
+
+    fun loadData(withAdult: Boolean) {
+        this.withAdult = withAdult
+        store.dispatch(event = AppStore.Event.Refresh)
+    }
+
+    private fun getMovieListFromServer() {
         viewModelScope.launch {
-            getCategoryListUseCase(withAdult = withAdult)
+            getMovieListUseCase(withAdult = withAdult)
                 .onFailure { error ->
                     store.dispatch(
-                        event = MainStore.Event.Error(
+                        event = AppStore.Event.ErrorReceived(
                             message = error.message ?: DEFAULT_ERROR_MESSAGE
                         )
                     )
                 }
-                .onSuccess { categoryList ->
-                    store.dispatch(event = MainStore.Event.Success(data = categoryList))
+                .onSuccess { movieList ->
+                    store.dispatch(event = AppStore.Event.DataReceived(data = dtoToUiMapper(movieList)))
                 }
         }
     }

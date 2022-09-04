@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/home_recycler_item" />
+            tools:listitem="@layout/item_sublist" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

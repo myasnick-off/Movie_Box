@@ -1,4 +1,4 @@
-package com.example.moviebox._core.ui
+package com.example.moviebox.main.ui
 
 // интерфейс для делигирования обработки событий по нажатию копки "назад" в реализующий его франмент
 interface BackPressedMonitor {

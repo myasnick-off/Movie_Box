@@ -12,10 +12,10 @@ import java.io.IOException
 
 class RemoteRepositoryImpl(private val apiService: ApiService) : RemoteRepository {
 
-    override suspend fun getMovieData(id: Long): Result<MovieDetailsDTO> {
+    override suspend fun getMovieData(movieId: Long): Result<MovieDetailsDTO> {
         return try {
             val response = withContext(Dispatchers.IO) {
-                apiService.getMovieDetailsAsync(id).await()
+                apiService.getMovieDetailsAsync(movieId).await()
             }
             if (response.isSuccessful) {
                 response.body()?.let { return Result.success(value = it) }

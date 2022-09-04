@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import com.example.moviebox.R
 import com.example.moviebox.databinding.FragmentContactsBinding
 import com.example.moviebox.contacts.ui.model.Contact
@@ -67,7 +68,6 @@ class ContactsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        movieData = arguments?.getParcelable(KEY_DETAILS)
         checkReadContactsPermission()
     }
 
@@ -270,8 +270,8 @@ class ContactsFragment : Fragment() {
         private const val ATTRIBUTE_PHONE = "phone"
         private const val KEY_DETAILS = "movie_details"
 
-        fun newInstance(bundle: Bundle): ContactsFragment {
-            return ContactsFragment().apply { arguments = bundle }
-        }
+        fun newInstance(movieData: MovieDetailsDTO): ContactsFragment =
+            ContactsFragment().apply {
+                arguments = bundleOf(KEY_DETAILS to movieData) }
     }
 }

@@ -6,17 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.moviebox.R
 import com.example.moviebox._core.data.remote.model.MovieDTO
-import com.example.moviebox._core.ui.OnItemViewClickListener
-import com.example.moviebox._core.ui.store.MainStore
-import com.example.moviebox._core.ui.store.MainStoreHolder
+import com.example.moviebox._core.ui.ItemClickListener
+import com.example.moviebox._core.ui.adapter.cells.category.CategoryListItem
+import com.example.moviebox._core.ui.model.ListViewState
+import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
 import com.example.moviebox.databinding.HomeFragmentBinding
 import com.example.moviebox.details.ui.DetailsFragment
 import com.example.moviebox.filter.ui.FilterFragment
-import com.example.moviebox.home.domain.model.Category
+import com.example.moviebox.home.ui.adapter.SublistAdapter
 import com.example.moviebox.search.ui.SearchFragment
 import com.example.moviebox.utils.hide
 import com.example.moviebox.utils.navigateToFragment
@@ -25,34 +27,23 @@ import com.example.moviebox.utils.showSnackBar
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 
 class HomeFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by viewModel { parametersOf(mainStore) }
-
-    private var storeHolder: MainStoreHolder? = null
-    private val mainStore: MainStore by lazy {
-        storeHolder?.mainStore ?: throw NullPointerException()
-    }
+    private val viewModel: HomeViewModel by viewModel()
 
     private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
 
     // реализация события по нажатию на itemView фильма в RecyclerView
-    private val onMovieItemClickListener = object : OnItemViewClickListener {
+    private val itemClickListener = object : ItemClickListener {
         override fun onItemClicked(movieId: Long) {
             navigateToFragment(fragment = DetailsFragment.newInstance(movieId = movieId))
         }
         override fun onItemLongClicked(movie: MovieDTO, view: View) {}
     }
-    private val adapter: HomeFragmentAdapter = HomeFragmentAdapter(onMovieItemClickListener)
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        storeHolder = context as MainStoreHolder
-    }
+    private val adapter: SublistAdapter = SublistAdapter(itemClickListener)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,31 +107,18 @@ class HomeFragment : Fragment() {
     }
 
     private fun initStore() {
-        mainStore.state.onEach(::renderStoreState).launchIn(viewLifecycleOwner.lifecycleScope)
-        mainStore.effect.onEach(::renderStoreEffect).launchIn(viewLifecycleOwner.lifecycleScope)
+        viewModel.viewState.onEach(::renderStoreState).launchIn(viewLifecycleOwner.lifecycleScope)
+        viewModel.viewEffect.onEach(::showErrorSnackBar).launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
-    private fun renderStoreState(state: MainStore.State) {
+    private fun renderStoreState(state: ListViewState) {
         when (state) {
-            MainStore.State.Empty -> showNothing()
-            MainStore.State.Loading -> showLoading()
-            is MainStore.State.Data -> showContent(data = state.data)
-            is MainStore.State.Error -> showError()
-            is MainStore.State.Reloading -> showReloading()
-        }
-    }
-
-    private fun renderStoreEffect(effect: MainStore.Effect) {
-        when (effect) {
-            is MainStore.Effect.Error -> showErrorSnackBar()
+            is ListViewState.Loading -> showLoading()
+            is ListViewState.Data -> showContent(data = state.data)
+            is ListViewState.Error -> showError()
+            is ListViewState.Refreshing -> showReloading()
             else -> {}
         }
-    }
-
-    private fun showNothing() {
-        binding.progressBar.root.hide()
-        binding.mainRecycler.hide()
-        binding.errorImage.hide()
     }
 
     private fun showLoading() {
@@ -155,11 +133,11 @@ class HomeFragment : Fragment() {
         binding.errorImage.show()
     }
 
-    private fun showContent(data: List<Category>) {
+    private fun showContent(data: List<CategoryListItem>) {
         binding.progressBar.root.hide()
         binding.errorImage.hide()
         binding.mainRecycler.show()
-        adapter.setData(data = data)
+        adapter.submitList(data)
     }
 
     private fun showReloading() {
@@ -172,11 +150,15 @@ class HomeFragment : Fragment() {
         viewModel.loadData(withAdult = getAdultSettings())
     }
 
-    private fun showErrorSnackBar() {
+    private fun showErrorSnackBar(message: String) {
         binding.root.showSnackBar(
-            getString(R.string.error),
-            getString(R.string.reload)
+            message = "${getString(R.string.error)} $message",
+            actionText = getString(R.string.reload)
         ) { loadMovieList() }
+    }
+
+    private fun showToastMessage(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun getAdultSettings(): Boolean {

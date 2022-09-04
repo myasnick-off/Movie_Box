@@ -16,7 +16,7 @@ import com.example.moviebox.utils.hide
 import com.example.moviebox.utils.show
 import com.example.moviebox.utils.showSnackBar
 import com.example.moviebox._core.data.remote.model.MovieDTO
-import com.example.moviebox._core.ui.OnItemViewClickListener
+import com.example.moviebox._core.ui.ItemClickListener
 import com.example.moviebox.details.ui.DetailsFragment
 import com.example.moviebox.utils.navigateToFragment
 
@@ -35,7 +35,7 @@ class TabFragment : Fragment() {
     private lateinit var adapter: TabRecyclerAdapter
 
     // реализация событий по нажатию на itemView фильма в RecyclerView
-    private val onMovieItemClickListener = object : OnItemViewClickListener {
+    private val onMovieItemClickListener = object : ItemClickListener {
 
         //по короткому нажатию запускаем фрагмент с деталями фильма
         override fun onItemClicked(movieId: Long) {

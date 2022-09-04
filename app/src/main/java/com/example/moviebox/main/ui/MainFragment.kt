@@ -1,4 +1,4 @@
-package com.example.moviebox._core.ui
+package com.example.moviebox.main.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater

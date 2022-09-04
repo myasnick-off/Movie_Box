@@ -86,10 +86,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
 
     // coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3'
 
     //Koin
-    implementation 'io.insert-koin:koin-android:3.1.4'
+    implementation 'io.insert-koin:koin-android:3.2.0'
 
     // Retrofit
     implementation 'com.google.code.gson:gson:2.8.9'

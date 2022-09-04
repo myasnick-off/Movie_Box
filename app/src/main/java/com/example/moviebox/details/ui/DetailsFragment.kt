@@ -47,7 +47,7 @@ class DetailsFragment : Fragment() {
 
         val observer = Observer<DetailsAppState> { renderData(it) }
         viewModel.getLiveData().observe(viewLifecycleOwner, observer)
-        movieId?.let { viewModel.getMovieDetailsFromServer(it) }
+        movieId?.let { viewModel.getMovieDetails(it) }
 
         val localObserver = Observer<LocalDataAppState> { renderCheck(it) }
         localViewModel.getLiveData().observe(viewLifecycleOwner, localObserver)
@@ -79,11 +79,11 @@ class DetailsFragment : Fragment() {
                     true
                 }
                 R.id.action_share -> {
-                    val bundle = Bundle().apply { putParcelable(KEY_DETAILS, movieData) }
-                    activity?.supportFragmentManager?.beginTransaction()
-                        ?.add(R.id.container, ContactsFragment.newInstance(bundle))
-                        ?.addToBackStack("ContactsFragment")
-                        ?.commit()
+                    requireActivity().supportFragmentManager
+                        .beginTransaction()
+                        .add(R.id.container, ContactsFragment.newInstance(movieData))
+                        .addToBackStack("ContactsFragment")
+                        .commit()
                     true
                 }
                 else -> false
@@ -126,7 +126,7 @@ class DetailsFragment : Fragment() {
                 detailsLayout.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload)
-                ) { movieId?.let { movieId -> viewModel.getMovieDetailsFromServer(movieId) } }
+                ) { movieId?.let { movieId -> viewModel.getMovieDetails(movieId) } }
             }
         }
     }
