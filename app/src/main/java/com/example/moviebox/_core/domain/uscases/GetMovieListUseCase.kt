@@ -10,14 +10,14 @@ class GetMovieListUseCase(private val remoteRepository: RemoteRepository) {
         // получаем с сервера список жанров (id жанров и их названия)
         // и заполняем список списками фильмов по жанрам
         return remoteRepository.getGenreList().map { genreList ->
-            val movieList = mutableListOf<MovieDTO>()
+            val movieSet = mutableSetOf<MovieDTO>()
             for (genre in genreList.genres) {
                 remoteRepository.getMovieListByGenre(withAdult = withAdult, genreId = genre.id)
                     .onSuccess { movies ->
-                        movieList += movies.results
+                        movieSet += movies.results
                     }
             }
-            movieList
+            movieSet.toList()
         }
     }
 }

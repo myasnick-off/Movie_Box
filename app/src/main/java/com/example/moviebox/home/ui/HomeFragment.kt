@@ -12,12 +12,14 @@ import androidx.lifecycle.lifecycleScope
 import com.example.moviebox.R
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.ui.ItemClickListener
+import com.example.moviebox._core.ui.adapter.RecyclerItem
 import com.example.moviebox._core.ui.adapter.cells.category.CategoryListItem
 import com.example.moviebox._core.ui.model.ListViewState
 import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
 import com.example.moviebox.databinding.HomeFragmentBinding
 import com.example.moviebox.details.ui.DetailsFragment
 import com.example.moviebox.filter.ui.FilterFragment
+import com.example.moviebox.filter.ui.model.FilterSet
 import com.example.moviebox.home.ui.adapter.SublistAdapter
 import com.example.moviebox.search.ui.SearchFragment
 import com.example.moviebox.utils.hide
@@ -36,14 +38,21 @@ class HomeFragment : Fragment() {
     private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
 
-    // реализация события по нажатию на itemView фильма в RecyclerView
     private val itemClickListener = object : ItemClickListener {
         override fun onItemClicked(movieId: Long) {
             navigateToFragment(fragment = DetailsFragment.newInstance(movieId = movieId))
         }
         override fun onItemLongClicked(movie: MovieDTO, view: View) {}
     }
-    private val adapter: SublistAdapter = SublistAdapter(itemClickListener)
+
+    private val gotoClickListener = object : GotoClickListener {
+        override fun invoke(categoryId: Int) {
+            val filterSet = FilterSet(genres = arrayListOf(categoryId))
+            navigateToFragment(fragment = SearchFragment.newInstance(filterSet = filterSet))
+        }
+    }
+
+    private val adapter: SublistAdapter = SublistAdapter(itemClickListener, gotoClickListener)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,7 +142,7 @@ class HomeFragment : Fragment() {
         binding.errorImage.show()
     }
 
-    private fun showContent(data: List<CategoryListItem>) {
+    private fun showContent(data: List<RecyclerItem>) {
         binding.progressBar.root.hide()
         binding.errorImage.hide()
         binding.mainRecycler.show()

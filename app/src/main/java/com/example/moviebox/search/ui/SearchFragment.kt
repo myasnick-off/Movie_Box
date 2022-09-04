@@ -24,7 +24,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
-    // создаем/вызываем экземпляр SearchViewModel
     private val viewModel: SearchViewModel by viewModel()
 
     private var _binding: FragmentSearchBinding? = null
@@ -33,17 +32,15 @@ class SearchFragment : Fragment() {
     private var phrase: String? = null
     private var filterSet: FilterSet? = null
     private var withAdult: Boolean = false
-    private lateinit var adapter: TabRecyclerAdapter
 
-    // реализация событий по нажатию на itemView фильма в RecyclerView
     private val onMovieItemClickListener = object : ItemClickListener {
-
-        //по короткому нажатию запускаем фрагмент с деталями фильма
         override fun onItemClicked(movieId: Long) {
             navigateToFragment(DetailsFragment.newInstance(movieId))
         }
         override fun onItemLongClicked(movie: MovieDTO, view: View) {}
     }
+
+    private val moviesAdapter: TabRecyclerAdapter = TabRecyclerAdapter(onMovieItemClickListener)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,21 +59,28 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)  {
         super.onViewCreated(view, savedInstanceState)
-
-        searchRecycler.layoutManager = GridLayoutManager(context, 2)
-        adapter = TabRecyclerAdapter(onMovieItemClickListener)
-        searchRecycler.adapter = adapter
-
-        val observer = Observer<ProfileAppState> { renderData(it) }
-        viewModel.getLiveData().observe(viewLifecycleOwner, observer)
+        initView()
+        initViewModel()
         searchMovies()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun initView() = with(binding) {
+        searchRecycler.apply {
+            layoutManager = GridLayoutManager(context, 2)
+            this.adapter = moviesAdapter
+        }
+    }
+
+    private fun initViewModel() {
+        val observer = Observer<ProfileAppState> { renderData(it) }
+        viewModel.getLiveData().observe(viewLifecycleOwner, observer)
     }
 
     private fun renderData(appState: ProfileAppState) = with(binding) {
@@ -97,17 +101,13 @@ class SearchFragment : Fragment() {
     }
 
     private fun searchMovies() {
-        if (phrase != null) {
-            viewModel.searchRequest(phrase!!, withAdult)
-        }
-        if(filterSet != null) {
-            viewModel.filterSearchRequest(filterSet!!, withAdult)
-        }
+        phrase?.let { viewModel.searchRequest(it, withAdult) }
+        filterSet?.let { viewModel.filterSearchRequest(it, withAdult) }
     }
 
     private fun showResult(movieList: List<MovieDTO>) {
         if (movieList.isNotEmpty()) {
-            adapter.submitList(movieList)
+            moviesAdapter.submitList(movieList)
         } else {
             binding.cantFindText.visibility = View.VISIBLE
         }

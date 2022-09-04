@@ -88,9 +88,10 @@
     <string name="thriller">thriller</string>
     <string name="war">War</string>
     <string name="western">Western</string>
+    <string name="more_films">More…</string>
     <array name="initial_range_values">
         <item>1920.0</item>
-        <item>2021.0</item>
+        <item>2022.0</item>
     </array>
     <array name="initial_rating_values">
         <item>0.0</item>

@@ -8,8 +8,12 @@ import com.example.moviebox._core.ui.ItemClickListener
 import com.example.moviebox._core.ui.adapter.Cell
 import com.example.moviebox._core.ui.adapter.RecyclerItem
 import com.example.moviebox.databinding.ItemSublistBinding
+import com.example.moviebox.home.ui.GotoClickListener
 
-class CategoryListCell(private val itemClickListener: ItemClickListener) : Cell<RecyclerItem> {
+class CategoryListCell(
+    private val itemClickListener: ItemClickListener,
+    private val gotoClickListener: GotoClickListener
+) : Cell<RecyclerItem> {
 
     override fun belongsTo(item: RecyclerItem): Boolean = item is CategoryListItem
 
@@ -18,7 +22,11 @@ class CategoryListCell(private val itemClickListener: ItemClickListener) : Cell<
     override fun holder(parent: ViewGroup): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemSublistBinding.inflate(inflater, parent, false)
-        return CategoryListViewHolder(binding = binding, listener = itemClickListener)
+        return CategoryListViewHolder(
+            binding = binding,
+            itemClickListener = itemClickListener,
+            gotoClickListener = gotoClickListener
+        )
     }
 
     override fun bind(holder: RecyclerView.ViewHolder, item: RecyclerItem) {

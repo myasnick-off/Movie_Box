@@ -17,6 +17,7 @@ class MovieViewHolder(
         itemMovieTitle.text = item.title
         itemMovieYear.text = item.releaseDate
         itemMoviePoster.load(posterUrl)
+        ratingLabel.text = item.voteAverage.toString()
         root.setOnClickListener { listener.onItemClicked(item.id) }
     }
 }

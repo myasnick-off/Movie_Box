@@ -1,5 +1,6 @@
 package com.example.moviebox._core.ui.model
 
+import com.example.moviebox._core.ui.adapter.RecyclerItem
 import com.example.moviebox._core.ui.adapter.cells.category.CategoryListItem
 
 /** Класс состояний экрана
@@ -14,8 +15,8 @@ import com.example.moviebox._core.ui.adapter.cells.category.CategoryListItem
 sealed class ListViewState {
     object Empty : ListViewState()
     object Loading : ListViewState()
-    data class Refreshing(val data: List<CategoryListItem>) : ListViewState()
-    data class MoreLoading(val data: List<CategoryListItem>) : ListViewState()
-    data class Data(val data: List<CategoryListItem>) : ListViewState()
+    data class Refreshing(val data: List<RecyclerItem>) : ListViewState()
+    data class MoreLoading(val data: List<RecyclerItem>) : ListViewState()
+    data class Data(val data: List<RecyclerItem>) : ListViewState()
     data class Error(var message: String?) : ListViewState()
 }
