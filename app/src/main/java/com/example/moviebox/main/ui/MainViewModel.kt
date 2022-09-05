@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviebox._core.domain.mapper.DtoToUiMapper
 import com.example.moviebox._core.domain.uscases.GetMovieListUseCase
-import com.example.moviebox._core.ui.store.AppStore
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import com.example.moviebox._core.ui.store.MainStore
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val store: AppStore,
+    private val store: MainStore,
     private val mapper: DtoToUiMapper,
     private val getMovieListUseCase: GetMovieListUseCase
 ) : ViewModel() {
@@ -19,7 +17,7 @@ class MainViewModel(
 
     fun loadData(withAdult: Boolean) {
         this.withAdult = withAdult
-        store.dispatch(event = AppStore.Event.Refresh)
+        store.dispatch(event = MainStore.Event.Refresh)
         getMovieListFromServer()
     }
 
@@ -28,13 +26,13 @@ class MainViewModel(
             getMovieListUseCase(withAdult = withAdult)
                 .onFailure { error ->
                     store.dispatch(
-                        event = AppStore.Event.ErrorReceived(
+                        event = MainStore.Event.ErrorReceived(
                             message = error.message ?: DEFAULT_ERROR_MESSAGE
                         )
                     )
                 }
                 .onSuccess { movieList ->
-                    store.dispatch(event = AppStore.Event.DataReceived(data = mapper(movieList)))
+                    store.dispatch(event = MainStore.Event.DataReceived(data = mapper(movieList)))
                 }
         }
     }

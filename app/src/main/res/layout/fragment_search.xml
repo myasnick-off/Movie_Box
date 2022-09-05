@@ -26,18 +26,21 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_recycler"
+            android:id="@+id/movie_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_4"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            tools:listitem="@layout/item_sublist_movie"
+            tools:itemCount="2"/>
 
         <TextView
-            android:id="@+id/cant_find_text"
+            android:id="@+id/nothing_found_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -47,7 +50,7 @@
             tools:visibility="visible" />
 
         <include
-            android:id="@+id/search_progress_bar"
+            android:id="@+id/search_loader"
             layout="@layout/item_progress_bar"/>
 
     </FrameLayout>

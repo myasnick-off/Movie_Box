@@ -1,21 +1,21 @@
 package com.example.moviebox.filter.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.moviebox.R
-import com.example.moviebox.databinding.FragmentFilterBinding
-import com.example.moviebox.utils.hide
-import com.example.moviebox.utils.show
-import com.example.moviebox.utils.showSnackBar
-import com.example.moviebox.filter.ui.model.FilterSet
 import com.example.moviebox._core.data.remote.model.GenreDTO
+import com.example.moviebox.databinding.FragmentFilterBinding
+import com.example.moviebox.filter.ui.model.FilterSet
 import com.example.moviebox.filter.ui.model.GenresAppState
 import com.example.moviebox.search.ui.SearchFragment
+import com.example.moviebox.utils.hide
 import com.example.moviebox.utils.navigateToFragment
+import com.example.moviebox.utils.show
+import com.example.moviebox.utils.showSnackBar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FilterFragment : Fragment() {

@@ -63,10 +63,10 @@ class RemoteRepositoryImpl(private val apiService: ApiService) : RemoteRepositor
         }
     }
 
-    override suspend fun searchByPhrase(phrase: String, withAdult: Boolean): Result<MovieListDTO> {
+    override suspend fun searchByPhrase(phrase: String, withAdult: Boolean, page: Int): Result<MovieListDTO> {
         return try {
             val response = withContext(Dispatchers.IO) {
-                apiService.getMovieListByPhraseAsync(query = phrase, includeAdult = withAdult).await()
+                apiService.getMovieListByPhraseAsync(query = phrase, includeAdult = withAdult, page = page).await()
             }
             if (response.isSuccessful) {
                 response.body()?.let { return Result.success(value = it) }
@@ -79,7 +79,7 @@ class RemoteRepositoryImpl(private val apiService: ApiService) : RemoteRepositor
         }
     }
 
-    override suspend fun filterSearch(filterSet: FilterSet, withAdult: Boolean): Result<MovieListDTO> {
+    override suspend fun filterSearch(filterSet: FilterSet, withAdult: Boolean, page: Int): Result<MovieListDTO> {
         return try {
             val response = withContext(Dispatchers.IO) {
                 apiService.getMovieListByFilterAsync(
@@ -88,7 +88,8 @@ class RemoteRepositoryImpl(private val apiService: ApiService) : RemoteRepositor
                     releaseDateLte = filterSet.yearTo.toString(),
                     voteAverageGte = filterSet.ratingFrom,
                     voteAverageLte = filterSet.ratingTo,
-                    genreIds = filterSet.genres
+                    genreIds = filterSet.genres,
+                    page = page
                 ).await()
             }
             if (response.isSuccessful) {

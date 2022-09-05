@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class AppStore : CoroutineScope by MainScope() {
+class MainStore : CoroutineScope by MainScope() {
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Empty)
     val state = _state.asStateFlow()

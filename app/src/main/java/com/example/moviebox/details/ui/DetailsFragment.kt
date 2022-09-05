@@ -9,14 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import coil.load
 import com.example.moviebox.R
-import com.example.moviebox.databinding.DetailsFragmentBinding
-import com.example.moviebox.utils.hide
-import com.example.moviebox.utils.show
-import com.example.moviebox.utils.showSnackBar
 import com.example.moviebox._core.data.remote.ApiUtils
 import com.example.moviebox._core.data.remote.model.GenreDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import com.example.moviebox.contacts.ui.ContactsFragment
+import com.example.moviebox.databinding.DetailsFragmentBinding
+import com.example.moviebox.utils.hide
+import com.example.moviebox.utils.show
+import com.example.moviebox.utils.showSnackBar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailsFragment : Fragment() {
@@ -137,10 +137,10 @@ class DetailsFragment : Fragment() {
     }
 
     private fun setData(movieData: MovieDetailsDTO) = with(binding) {
-        textTitle.text = movieData.title
-        textRating.text = movieData.voteAverage.toString()
-        textDate.text = movieData.releaseDate
-        textGenresList.text = genreListToString(movieData.genres)
+        movieTitle.text = movieData.title
+        movieRating.text = movieData.voteAverage.toString()
+        releaseDate.text = movieData.releaseDate
+        movieGenres.text = genreListToString(movieData.genres)
         textDetails.text = movieData.overview
         ratingBar.rating = movieData.voteAverage.toFloat() / 2
 

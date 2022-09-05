@@ -2,7 +2,6 @@ package com.example.moviebox._core.domain.uscases
 
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.domain.RemoteRepository
-import com.example.moviebox.home.domain.model.Category
 
 class GetMovieListUseCase(private val remoteRepository: RemoteRepository) {
 

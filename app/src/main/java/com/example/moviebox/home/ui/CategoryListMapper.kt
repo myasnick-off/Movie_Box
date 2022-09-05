@@ -1,9 +1,9 @@
 package com.example.moviebox.home.ui
 
 import com.example.moviebox._core.ui.adapter.RecyclerItem
-import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
 import com.example.moviebox._core.ui.adapter.cells.category.CategoryListItem
 import com.example.moviebox._core.ui.adapter.cells.goto.GotoItem
+import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
 import com.example.moviebox.utils.Genre
 
 class CategoryListMapper {

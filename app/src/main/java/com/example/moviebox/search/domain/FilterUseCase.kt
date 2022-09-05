@@ -6,7 +6,7 @@ import com.example.moviebox.filter.ui.model.FilterSet
 
 class FilterUseCase(private val remoteRepository: RemoteRepository) {
 
-    suspend operator fun invoke(filterSet: FilterSet, withAdult: Boolean): Result<MovieListDTO> {
-        return remoteRepository.filterSearch(filterSet = filterSet, withAdult = withAdult)
+    suspend operator fun invoke(filterSet: FilterSet, withAdult: Boolean, page: Int): Result<MovieListDTO> {
+        return remoteRepository.filterSearch(filterSet = filterSet, withAdult = withAdult, page = page)
     }
 }

@@ -3,10 +3,10 @@
     <string name="about">Описание:</string>
     <string name="error">Ошибка загрузки!</string>
     <string name="reload">Еще раз!</string>
-    <string name="genres">"Жанры: "</string>
+    <string name="genres">"Жанры:"</string>
     <string name="category">Категория</string>
-    <string name="director">"Режиссер: "</string>
-    <string name="release_date">"Премьера: "</string>
+    <string name="director">"Режиссер:"</string>
+    <string name="release_date">"Премьера:"</string>
     <string name="Main">Главная</string>
     <string name="favorite">Избранное</string>
     <string name="profile">Профиль</string>

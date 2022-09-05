@@ -7,10 +7,10 @@
     <string name="about">About:</string>
     <string name="error">Loading error!</string>
     <string name="reload">Try again!</string>
-    <string name="genres">Genres: </string>
+    <string name="genres">Genres:</string>
     <string name="category">Category</string>
     <string name="director">Director:</string>
-    <string name="release_date">Release date: </string>
+    <string name="release_date">Release date:</string>
     <string name="from_tmdb" translatable="false">From TMDB</string>
     <string name="Main">Main</string>
     <string name="favorite">Favorite</string>

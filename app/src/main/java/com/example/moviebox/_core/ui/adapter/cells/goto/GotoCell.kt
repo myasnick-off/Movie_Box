@@ -4,11 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviebox.R
-import com.example.moviebox._core.ui.ItemClickListener
 import com.example.moviebox._core.ui.adapter.Cell
 import com.example.moviebox._core.ui.adapter.RecyclerItem
 import com.example.moviebox.databinding.ItemGotoBinding
-import com.example.moviebox.databinding.ItemSublistMovieBinding
 import com.example.moviebox.home.ui.GotoClickListener
 
 class GotoCell(private val gotoClickListener: GotoClickListener) : Cell<RecyclerItem> {

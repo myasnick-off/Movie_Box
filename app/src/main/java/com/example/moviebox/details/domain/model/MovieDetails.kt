@@ -1,7 +1,5 @@
 package com.example.moviebox.details.domain.model
 
-import com.example.moviebox._core.data.remote.model.GenreDTO
-
 data class MovieDetails(
         val id: Long,
         val genres: List<String>,

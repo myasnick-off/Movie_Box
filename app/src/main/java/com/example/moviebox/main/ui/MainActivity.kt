@@ -4,14 +4,16 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moviebox.R
-import com.example.moviebox._core.ui.store.AppStore
+import com.example.moviebox._core.ui.store.MainStore
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), StoreHolder {
 
-    private val viewModel: MainViewModel by viewModel()
+    override val mainStore: MainStore by inject()
+
+    private val viewModel: MainViewModel by viewModel() { parametersOf(mainStore) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,4 +42,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val ADULT_KEY = "adult_key"
     }
+
+
 }

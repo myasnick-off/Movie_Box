@@ -13,14 +13,14 @@ import com.example.moviebox.R
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.ui.ItemClickListener
 import com.example.moviebox._core.ui.adapter.RecyclerItem
-import com.example.moviebox._core.ui.adapter.cells.category.CategoryListItem
 import com.example.moviebox._core.ui.model.ListViewState
-import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
+import com.example.moviebox._core.ui.store.MainStore
 import com.example.moviebox.databinding.HomeFragmentBinding
 import com.example.moviebox.details.ui.DetailsFragment
 import com.example.moviebox.filter.ui.FilterFragment
 import com.example.moviebox.filter.ui.model.FilterSet
 import com.example.moviebox.home.ui.adapter.SublistAdapter
+import com.example.moviebox.main.ui.StoreHolder
 import com.example.moviebox.search.ui.SearchFragment
 import com.example.moviebox.utils.hide
 import com.example.moviebox.utils.navigateToFragment
@@ -29,14 +29,21 @@ import com.example.moviebox.utils.showSnackBar
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class HomeFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by viewModel()
+    private val store: MainStore by lazy {
+        storeHolder?.mainStore ?: throw NullPointerException()
+    }
+
+    private val viewModel: HomeViewModel by viewModel() { parametersOf(store) }
 
     private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private var storeHolder: StoreHolder? = null
 
     private val itemClickListener = object : ItemClickListener {
         override fun onItemClicked(movieId: Long) {
@@ -53,6 +60,11 @@ class HomeFragment : Fragment() {
     }
 
     private val adapter: SublistAdapter = SublistAdapter(itemClickListener, gotoClickListener)
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        storeHolder = context as StoreHolder
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +87,11 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDetach() {
+        storeHolder = null
+        super.onDetach()
     }
 
     private fun initView() = with(binding) {

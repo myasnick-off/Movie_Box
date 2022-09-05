@@ -1,7 +1,6 @@
 package com.example.moviebox._core.ui.adapter.cells.category
 
 import com.example.moviebox._core.ui.adapter.RecyclerItem
-import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
 import com.example.moviebox.utils.Genre
 
 data class CategoryListItem(

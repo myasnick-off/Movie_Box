@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.moviebox._core.domain.mapper.DtoToUiMapper
 import com.example.moviebox._core.domain.uscases.GetMovieListUseCase
 import com.example.moviebox._core.ui.model.ListViewState
-import com.example.moviebox._core.ui.store.AppStore
+import com.example.moviebox._core.ui.store.MainStore
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val store: AppStore,
+    private val store: MainStore,
     private val dtoToUiMapper: DtoToUiMapper,
     private val categoryListMapper: CategoryListMapper,
     private val getMovieListUseCase: GetMovieListUseCase
@@ -29,20 +29,20 @@ class HomeViewModel(
         store.effect.onEach(::renderStoreEffect).launchIn(viewModelScope)
     }
 
-    private fun renderStoreState(state: AppStore.State) {
+    private fun renderStoreState(state: MainStore.State) {
         when (state) {
-            is AppStore.State.Empty, is AppStore.State.Loading -> _viewState.value = ListViewState.Loading
-            is AppStore.State.Data -> _viewState.value = ListViewState.Data(data = categoryListMapper(state.data))
-            is AppStore.State.Error -> _viewState.value = ListViewState.Error(message = state.message)
-            is AppStore.State.Refreshing -> _viewState.value = ListViewState.Refreshing(data = categoryListMapper(state.data))
+            is MainStore.State.Empty, is MainStore.State.Loading -> _viewState.value = ListViewState.Loading
+            is MainStore.State.Data -> _viewState.value = ListViewState.Data(data = categoryListMapper(state.data))
+            is MainStore.State.Error -> _viewState.value = ListViewState.Error(message = state.message)
+            is MainStore.State.Refreshing -> _viewState.value = ListViewState.Refreshing(data = categoryListMapper(state.data))
             else -> {}
         }
     }
 
-    private fun renderStoreEffect(storeEffect: AppStore.Effect) {
+    private fun renderStoreEffect(storeEffect: MainStore.Effect) {
         when(storeEffect) {
-            is AppStore.Effect.LoadData -> getMovieListFromServer()
-            is AppStore.Effect.Error -> emitMessage(storeEffect.message)
+            is MainStore.Effect.LoadData -> getMovieListFromServer()
+            is MainStore.Effect.Error -> emitMessage(storeEffect.message)
         }
     }
 
@@ -52,7 +52,7 @@ class HomeViewModel(
 
     fun loadData(withAdult: Boolean) {
         this.withAdult = withAdult
-        store.dispatch(event = AppStore.Event.Refresh)
+        store.dispatch(event = MainStore.Event.Refresh)
     }
 
     private fun getMovieListFromServer() {
@@ -60,13 +60,13 @@ class HomeViewModel(
             getMovieListUseCase(withAdult = withAdult)
                 .onFailure { error ->
                     store.dispatch(
-                        event = AppStore.Event.ErrorReceived(
+                        event = MainStore.Event.ErrorReceived(
                             message = error.message ?: DEFAULT_ERROR_MESSAGE
                         )
                     )
                 }
                 .onSuccess { movieList ->
-                    store.dispatch(event = AppStore.Event.DataReceived(data = dtoToUiMapper(movieList)))
+                    store.dispatch(event = MainStore.Event.DataReceived(data = dtoToUiMapper(movieList)))
                 }
         }
     }

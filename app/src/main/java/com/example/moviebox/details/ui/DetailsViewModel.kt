@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import com.example.moviebox._core.domain.LocalRepository
 import com.example.moviebox.details.domain.GetMovieDetailsUseCase

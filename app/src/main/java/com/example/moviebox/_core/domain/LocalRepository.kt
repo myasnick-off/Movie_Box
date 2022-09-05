@@ -2,7 +2,6 @@ package com.example.moviebox._core.domain
 
 import com.example.moviebox._core.data.local.entities.MovieEntity
 import com.example.moviebox._core.data.remote.model.MovieDTO
-import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 
 interface LocalRepository {
     suspend fun getAllLocalData(movieId: Long): Result<List<MovieEntity>>

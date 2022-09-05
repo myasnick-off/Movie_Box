@@ -11,14 +11,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.moviebox.R
-import com.example.moviebox.databinding.FragmentTabBinding
-import com.example.moviebox.utils.hide
-import com.example.moviebox.utils.show
-import com.example.moviebox.utils.showSnackBar
 import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.ui.ItemClickListener
+import com.example.moviebox.databinding.FragmentTabBinding
 import com.example.moviebox.details.ui.DetailsFragment
+import com.example.moviebox.utils.hide
 import com.example.moviebox.utils.navigateToFragment
+import com.example.moviebox.utils.show
+import com.example.moviebox.utils.showSnackBar
 
 class TabFragment : Fragment() {
 
