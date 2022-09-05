@@ -1,4 +1,4 @@
-package com.example.moviebox._core.ui.adapter.cells.category
+package com.example.moviebox.home.ui.adapter.category
 
 import com.example.moviebox._core.ui.adapter.RecyclerItem
 import com.example.moviebox.utils.Genre

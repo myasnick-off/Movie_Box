@@ -7,10 +7,8 @@ import com.example.moviebox.R
 import com.example.moviebox._core.ui.ItemClickListener
 import com.example.moviebox._core.ui.adapter.Cell
 import com.example.moviebox._core.ui.adapter.RecyclerItem
-import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
+import com.example.moviebox._core.ui.model.MovieItem
 import com.example.moviebox.databinding.ItemSearchListMovieBinding
-import com.example.moviebox.search.ui.adapter.MovieLargeViewHolder
-import com.example.moviebox.databinding.ItemSublistMovieBinding
 
 class MovieLargeCell(private val itemClickListener: ItemClickListener) : Cell<RecyclerItem> {
 

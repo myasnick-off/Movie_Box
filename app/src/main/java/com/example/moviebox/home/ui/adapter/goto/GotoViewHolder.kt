@@ -1,4 +1,4 @@
-package com.example.moviebox._core.ui.adapter.cells.goto
+package com.example.moviebox.home.ui.adapter.goto
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviebox.databinding.ItemGotoBinding

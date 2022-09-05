@@ -1,7 +1,7 @@
 package com.example.moviebox._core.domain.mapper
 
 import com.example.moviebox._core.data.remote.model.MovieDTO
-import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
+import com.example.moviebox._core.ui.model.MovieItem
 
 class DtoToUiMapper {
     operator fun invoke(entityList: List<MovieDTO>): List<MovieItem> {

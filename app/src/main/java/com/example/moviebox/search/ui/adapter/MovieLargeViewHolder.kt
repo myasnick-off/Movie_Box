@@ -4,9 +4,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.moviebox._core.data.remote.ApiUtils
 import com.example.moviebox._core.ui.ItemClickListener
-import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
+import com.example.moviebox._core.ui.model.MovieItem
 import com.example.moviebox.databinding.ItemSearchListMovieBinding
-import com.example.moviebox.databinding.ItemSublistMovieBinding
 
 class MovieLargeViewHolder(
     private val binding: ItemSearchListMovieBinding,

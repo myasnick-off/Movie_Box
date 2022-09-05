@@ -1,6 +1,6 @@
 package com.example.moviebox._core.ui.store
 
-import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
+import com.example.moviebox._core.ui.model.MovieItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -1,12 +1,13 @@
-package com.example.moviebox._core.ui.adapter.cells.movie
+package com.example.moviebox.home.ui.adapter.movie
 
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.moviebox._core.data.remote.ApiUtils
 import com.example.moviebox._core.ui.ItemClickListener
+import com.example.moviebox._core.ui.model.MovieItem
 import com.example.moviebox.databinding.ItemSublistMovieBinding
 
-class MovieViewHolder(
+class MovieSmallViewHolder(
     private val binding: ItemSublistMovieBinding,
     private val listener: ItemClickListener
 ) :

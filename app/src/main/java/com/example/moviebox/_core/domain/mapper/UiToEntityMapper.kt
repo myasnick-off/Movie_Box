@@ -1,7 +1,7 @@
 package com.example.moviebox._core.domain.mapper
 
 import com.example.moviebox._core.data.local.entities.MovieEntity
-import com.example.moviebox._core.ui.adapter.cells.movie.MovieItem
+import com.example.moviebox._core.ui.model.MovieItem
 
 class UiToEntityMapper {
 

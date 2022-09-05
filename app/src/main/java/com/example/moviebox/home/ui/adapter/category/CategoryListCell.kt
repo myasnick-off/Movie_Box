@@ -1,4 +1,4 @@
-package com.example.moviebox._core.ui.adapter.cells.category
+package com.example.moviebox.home.ui.adapter.category
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,4 +1,4 @@
-package com.example.moviebox._core.ui.adapter.cells.movie
+package com.example.moviebox._core.ui.model
 
 import com.example.moviebox._core.ui.adapter.RecyclerItem
 
