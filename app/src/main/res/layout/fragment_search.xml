@@ -36,7 +36,7 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
-            tools:listitem="@layout/item_sublist_movie"
+            tools:listitem="@layout/item_search_list__movie"
             tools:itemCount="2"/>
 
         <TextView
