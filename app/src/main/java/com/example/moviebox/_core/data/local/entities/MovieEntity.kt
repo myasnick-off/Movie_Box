@@ -14,7 +14,7 @@ data class MovieEntity(
     @ColumnInfo(name = "vote_average") val voteAverage: Double,
     @ColumnInfo(name = "popularity") val popularity: Double,
     @ColumnInfo(name = "adult") val adult: Boolean,
-    @ColumnInfo(name = "in_history") val inHistory: Boolean,
-    @ColumnInfo(name = "in_favorite") val inFavorite: Boolean,
-    @ColumnInfo(name = "in_wishlist") val inWishlist: Boolean
+    @ColumnInfo(name = "in_history") val inHistory: Boolean = false,
+    @ColumnInfo(name = "in_favorite") val inFavorite: Boolean = false,
+    @ColumnInfo(name = "in_wishlist") val inWishlist: Boolean = false
 )
