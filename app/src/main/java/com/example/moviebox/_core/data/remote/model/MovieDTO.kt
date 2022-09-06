@@ -10,14 +10,20 @@ data class MovieDTO(
     @SerializedName("id")
     val id: Long,
 
+    @SerializedName("genre_ids")
+    val genreIds: List<Int>,
+
     @SerializedName("poster_path")
-    val posterPath: String,
+    val posterPath: String?,
 
     @SerializedName("release_date")
     val releaseDate: String,
 
     @SerializedName("title")
     val title: String,
+
+    @SerializedName("popularity")
+    val popularity: Double,
 
     @SerializedName("vote_average")
     val voteAverage: Double,

@@ -6,25 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.lifecycleScope
 import com.example.moviebox.R
+import com.example.moviebox._core.data.remote.model.MovieDTO
+import com.example.moviebox._core.ui.ItemClickListener
+import com.example.moviebox._core.ui.adapter.EndOfPageListener
+import com.example.moviebox._core.ui.adapter.RecyclerItem
+import com.example.moviebox._core.ui.model.ListViewState
 import com.example.moviebox.databinding.FragmentSearchBinding
+import com.example.moviebox.details.ui.DetailsFragment
+import com.example.moviebox.filter.ui.model.FilterSet
+import com.example.moviebox.search.ui.adapter.SearchListAdapter
 import com.example.moviebox.utils.hide
+import com.example.moviebox.utils.navigateToFragment
 import com.example.moviebox.utils.show
 import com.example.moviebox.utils.showSnackBar
-import com.example.moviebox._core.ui.model.FilterSet
-import com.example.moviebox._core.data.remote.model.MovieDTO
-import com.example.moviebox._core.ui.OnItemViewClickListener
-import com.example.moviebox.details.ui.DetailsFragment
-import com.example.moviebox.profile.ui.ProfileAppState
-import com.example.moviebox.profile.ui.TabRecyclerAdapter
-import com.example.moviebox.utils.navigateToFragment
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
-    // создаем/вызываем экземпляр SearchViewModel
     private val viewModel: SearchViewModel by viewModel()
 
     private var _binding: FragmentSearchBinding? = null
@@ -33,17 +35,24 @@ class SearchFragment : Fragment() {
     private var phrase: String? = null
     private var filterSet: FilterSet? = null
     private var withAdult: Boolean = false
-    private lateinit var adapter: TabRecyclerAdapter
 
-    // реализация событий по нажатию на itemView фильма в RecyclerView
-    private val onMovieItemClickListener = object : OnItemViewClickListener {
-
-        //по короткому нажатию запускаем фрагмент с деталями фильма
+    private val itemClickListener = object : ItemClickListener {
         override fun onItemClicked(movieId: Long) {
             navigateToFragment(DetailsFragment.newInstance(movieId))
         }
         override fun onItemLongClicked(movie: MovieDTO, view: View) {}
     }
+
+    private val endOfPageListener = object : EndOfPageListener {
+        override fun positionCheck(position: Int, count: Int): Boolean {
+            return (position + ITEMS_LEFT) >= count
+        }
+        override fun loadMoreCallback() {
+            viewModel.loadNextPage()
+        }
+    }
+
+    private val moviesAdapter: SearchListAdapter = SearchListAdapter(itemClickListener, endOfPageListener)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,15 +71,10 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)  {
         super.onViewCreated(view, savedInstanceState)
-
-        searchRecycler.layoutManager = GridLayoutManager(context, 2)
-        adapter = TabRecyclerAdapter(onMovieItemClickListener)
-        searchRecycler.adapter = adapter
-
-        val observer = Observer<ProfileAppState> { renderData(it) }
-        viewModel.getLiveData().observe(viewLifecycleOwner, observer)
+        initView()
+        initViewModel()
         searchMovies()
     }
 
@@ -79,51 +83,89 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 
-    private fun renderData(appState: ProfileAppState) = with(binding) {
-        when (appState) {
-            ProfileAppState.Loading -> searchProgressBar.progressItem.show()
-            is ProfileAppState.Success -> {
-                searchProgressBar.progressItem.hide()
-                showResult(appState.movieList)
-            }
-            is ProfileAppState.Error -> {
-                searchProgressBar.progressItem.hide()
-                searchLayout.showSnackBar(
-                    getString(R.string.error),
-                    getString(R.string.reload)
-                ) { searchMovies() }
-            }
+    private fun initView() = with(binding) {
+        movieList.adapter = moviesAdapter
+    }
+
+    private fun initViewModel() {
+        viewModel.viewState.onEach { renderData(it) }.launchIn(lifecycleScope)
+        viewModel.viewEffect.onEach { showErrorMessage(it) }.launchIn(lifecycleScope)
+    }
+
+    private fun showErrorMessage(message: String) {
+        binding.root.showSnackBar(
+            message = "${getString(R.string.error)} $message",
+            actionText = getString(R.string.reload)
+        ) { searchMovies() }
+    }
+
+    private fun renderData(viewState: ListViewState) {
+        when (viewState) {
+            ListViewState.Empty -> showEmptyScreen()
+            ListViewState.Loading -> showEmptyLoading()
+            is ListViewState.Data -> showData(data = viewState.data, loadMore = viewState.loadMore)
+            is ListViewState.Error -> showEmptyScreen()
+            is ListViewState.MoreLoading -> showMoreLoading(data = viewState.data)
+            is ListViewState.Refreshing -> showRefreshing(data = viewState.data)
+        }
+    }
+
+    private fun showRefreshing(data: List<RecyclerItem>) = with(binding) {
+        movieList.show()
+        searchLoader.root.show()
+        nothingFoundText.hide()
+        updateList(data = data, loadMore = false)
+    }
+
+    private fun showMoreLoading(data: List<RecyclerItem>) = with(binding) {
+        movieList.show()
+        searchLoader.root.show()
+        nothingFoundText.hide()
+        updateList(data = data, loadMore = false)
+    }
+
+    private fun showData(data: List<RecyclerItem>, loadMore: Boolean) = with(binding) {
+        movieList.show()
+        searchLoader.root.hide()
+        nothingFoundText.hide()
+        updateList(data = data, loadMore = loadMore)
+    }
+
+    private fun showEmptyLoading() = with(binding) {
+        movieList.hide()
+        searchLoader.root.show()
+        nothingFoundText.hide()
+    }
+
+    private fun showEmptyScreen() = with(binding) {
+        movieList.hide()
+        searchLoader.root.hide()
+        nothingFoundText.show()
+    }
+
+    private fun updateList(data: List<RecyclerItem>, loadMore: Boolean) {
+        moviesAdapter.apply {
+            this.loadMore = loadMore
+            submitList(data)
         }
     }
 
     private fun searchMovies() {
-        if (phrase != null) {
-            viewModel.searchRequest(phrase!!, withAdult)
-        }
-        if(filterSet != null) {
-            viewModel.filterSearchRequest(filterSet!!, withAdult)
-        }
-    }
-
-    private fun showResult(movieList: List<MovieDTO>) {
-        if (movieList.isNotEmpty()) {
-            adapter.submitList(movieList)
-        } else {
-            binding.cantFindText.visibility = View.VISIBLE
-        }
+        phrase?.let { viewModel.searchByPhrase(it, withAdult) }
+        filterSet?.let { viewModel.searchByFilter(it, withAdult) }
     }
 
     companion object {
         private const val ARG_FILTER_SET = "FILTER_SET"
         private const val ARG_SEARCH_PHRASE = "SEARCH_PHRASE"
         private const val ARG_WITH_ADULT = "WITH_ADULT"
+        private const val ITEMS_LEFT = 3
 
-        fun newInstance(phrase: String? = null, filterSet: FilterSet? = null, hasAdult: Boolean) =
+        fun newInstance(phrase: String? = null, filterSet: FilterSet? = null) =
             SearchFragment().apply {
                 arguments = bundleOf(
                     ARG_SEARCH_PHRASE to phrase,
-                    ARG_FILTER_SET to filterSet,
-                    ARG_WITH_ADULT to hasAdult
+                    ARG_FILTER_SET to filterSet
                 )
             }
     }

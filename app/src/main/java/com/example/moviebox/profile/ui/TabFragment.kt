@@ -11,14 +11,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.moviebox.R
+import com.example.moviebox._core.data.remote.model.MovieDTO
+import com.example.moviebox._core.ui.ItemClickListener
 import com.example.moviebox.databinding.FragmentTabBinding
+import com.example.moviebox.details.ui.DetailsFragment
 import com.example.moviebox.utils.hide
+import com.example.moviebox.utils.navigateToFragment
 import com.example.moviebox.utils.show
 import com.example.moviebox.utils.showSnackBar
-import com.example.moviebox._core.data.remote.model.MovieDTO
-import com.example.moviebox._core.ui.OnItemViewClickListener
-import com.example.moviebox.details.ui.DetailsFragment
-import com.example.moviebox.utils.navigateToFragment
 
 class TabFragment : Fragment() {
 
@@ -35,7 +35,7 @@ class TabFragment : Fragment() {
     private lateinit var adapter: TabRecyclerAdapter
 
     // реализация событий по нажатию на itemView фильма в RecyclerView
-    private val onMovieItemClickListener = object : OnItemViewClickListener {
+    private val onMovieItemClickListener = object : ItemClickListener {
 
         //по короткому нажатию запускаем фрагмент с деталями фильма
         override fun onItemClicked(movieId: Long) {
@@ -91,13 +91,13 @@ class TabFragment : Fragment() {
 
     private fun renderData(appState: ProfileAppState) = with(binding) {
         when (appState) {
-            ProfileAppState.Loading -> tabProgressBar.progressItem.show()
+            ProfileAppState.Loading -> tabProgressBar.root.show()
             is ProfileAppState.Success -> {
-                tabProgressBar.progressItem.hide()
+                tabProgressBar.root.hide()
                 adapter.submitList(appState.movieList)
             }
             is ProfileAppState.Error -> {
-                tabProgressBar.progressItem.hide()
+                tabProgressBar.root.hide()
                 historyLayout.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload)

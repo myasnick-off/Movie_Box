@@ -1,50 +1,77 @@
 package com.example.moviebox.home.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moviebox._core.ui.model.AppState
-import com.example.moviebox.home.domain.MovieListUseCase
-import com.example.moviebox.home.domain.model.Category
+import com.example.moviebox._core.domain.mapper.DtoToUiMapper
+import com.example.moviebox._core.domain.uscases.GetMovieListUseCase
+import com.example.moviebox._core.ui.model.ListViewState
+import com.example.moviebox._core.ui.store.MainStore
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val movieListUseCase: MovieListUseCase) : ViewModel() {
+class HomeViewModel(
+    private val store: MainStore,
+    private val dtoToUiMapper: DtoToUiMapper,
+    private val categoryListMapper: CategoryListMapper,
+    private val getMovieListUseCase: GetMovieListUseCase
+) : ViewModel() {
 
-    private val liveData = MutableLiveData<AppState>()
-    private var categoryList: List<Category>? = null    // переменная для локального хранения загруженных данных
-    private var isDataLoaded = false                    // флаг наличия уже загруженных данных
+    private val _viewState: MutableStateFlow<ListViewState> = MutableStateFlow(ListViewState.Empty)
+    val viewState = _viewState.asStateFlow()
 
-    fun getLiveData(): LiveData<AppState> = liveData
+    private val _viewEffect: MutableSharedFlow<String> = MutableSharedFlow()
+    val viewEffect = _viewEffect.asSharedFlow()
 
-    fun getMovieListFromServer(withAdult: Boolean) {
-        liveData.value = AppState.Loading
-        if (!isDataLoaded) {
-            viewModelScope.launch {
-                movieListUseCase(withAdult)
-                    .onFailure { error ->
-                        liveData.postValue(AppState.Error(error))
-                    }
-                    .onSuccess { categoryList ->
-                        if (categoryList.isNotEmpty()) {
-                            isDataLoaded = true
-                            liveData.value = AppState.Success(categoryList)
-                        } else {
-                            isDataLoaded = false
-                            liveData.value = AppState.Error(Throwable())
-                        }
-                    }
-            }
-        } else {
-            categoryList?.let { liveData.value = AppState.Success(it) } ?: run {
-                isDataLoaded = false
-                liveData.value = AppState.Error(Throwable())
-            }
+    private var withAdult: Boolean = false
+
+    init {
+        store.state.onEach(::renderStoreState).launchIn(viewModelScope)
+        store.effect.onEach(::renderStoreEffect).launchIn(viewModelScope)
+    }
+
+    private fun renderStoreState(state: MainStore.State) {
+        when (state) {
+            is MainStore.State.Empty, is MainStore.State.Loading -> _viewState.value = ListViewState.Loading
+            is MainStore.State.Data -> _viewState.value = ListViewState.Data(data = categoryListMapper(state.data))
+            is MainStore.State.Error -> _viewState.value = ListViewState.Error(message = state.message)
+            is MainStore.State.Refreshing -> _viewState.value = ListViewState.Refreshing(data = categoryListMapper(state.data))
+            else -> {}
         }
     }
 
-    fun resetDataLoaded() {
-        isDataLoaded = false
+    private fun renderStoreEffect(storeEffect: MainStore.Effect) {
+        when(storeEffect) {
+            is MainStore.Effect.LoadData -> getMovieListFromServer()
+            is MainStore.Effect.Error -> emitMessage(storeEffect.message)
+        }
     }
 
+    private fun emitMessage(message: String) {
+        viewModelScope.launch { _viewEffect.emit(value = message) }
+    }
+
+    fun loadData(withAdult: Boolean) {
+        this.withAdult = withAdult
+        store.dispatch(event = MainStore.Event.Refresh)
+    }
+
+    private fun getMovieListFromServer() {
+        viewModelScope.launch {
+            getMovieListUseCase(withAdult = withAdult)
+                .onFailure { error ->
+                    store.dispatch(
+                        event = MainStore.Event.ErrorReceived(
+                            message = error.message ?: DEFAULT_ERROR_MESSAGE
+                        )
+                    )
+                }
+                .onSuccess { movieList ->
+                    store.dispatch(event = MainStore.Event.DataReceived(data = dtoToUiMapper(movieList)))
+                }
+        }
+    }
+
+    companion object {
+        private const val DEFAULT_ERROR_MESSAGE = "Unknown error!"
+    }
 }

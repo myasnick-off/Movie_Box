@@ -1,11 +1,10 @@
 package com.example.moviebox._core.data.remote
 
 import com.example.moviebox._core.data.remote.model.GenreListDTO
-import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import com.example.moviebox._core.data.remote.model.MovieListDTO
 import com.example.moviebox._core.domain.RemoteRepository
-import com.example.moviebox._core.ui.model.FilterSet
+import com.example.moviebox.filter.ui.model.FilterSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -13,10 +12,10 @@ import java.io.IOException
 
 class RemoteRepositoryImpl(private val apiService: ApiService) : RemoteRepository {
 
-    override suspend fun getMovieData(id: Long): Result<MovieDetailsDTO> {
+    override suspend fun getMovieData(movieId: Long): Result<MovieDetailsDTO> {
         return try {
             val response = withContext(Dispatchers.IO) {
-                apiService.getMovieDetailsAsync(id).await()
+                apiService.getMovieDetailsAsync(movieId).await()
             }
             if (response.isSuccessful) {
                 response.body()?.let { return Result.success(value = it) }
@@ -64,10 +63,10 @@ class RemoteRepositoryImpl(private val apiService: ApiService) : RemoteRepositor
         }
     }
 
-    override suspend fun searchByPhrase(phrase: String, withAdult: Boolean): Result<MovieListDTO> {
+    override suspend fun searchByPhrase(phrase: String, withAdult: Boolean, page: Int): Result<MovieListDTO> {
         return try {
             val response = withContext(Dispatchers.IO) {
-                apiService.getMovieListByPhraseAsync(query = phrase, includeAdult = withAdult).await()
+                apiService.getMovieListByPhraseAsync(query = phrase, includeAdult = withAdult, page = page).await()
             }
             if (response.isSuccessful) {
                 response.body()?.let { return Result.success(value = it) }
@@ -80,7 +79,7 @@ class RemoteRepositoryImpl(private val apiService: ApiService) : RemoteRepositor
         }
     }
 
-    override suspend fun filterSearch(filterSet: FilterSet, withAdult: Boolean): Result<MovieListDTO> {
+    override suspend fun filterSearch(filterSet: FilterSet, withAdult: Boolean, page: Int): Result<MovieListDTO> {
         return try {
             val response = withContext(Dispatchers.IO) {
                 apiService.getMovieListByFilterAsync(
@@ -89,7 +88,8 @@ class RemoteRepositoryImpl(private val apiService: ApiService) : RemoteRepositor
                     releaseDateLte = filterSet.yearTo.toString(),
                     voteAverageGte = filterSet.ratingFrom,
                     voteAverageLte = filterSet.ratingTo,
-                    genreIds = filterSet.genres
+                    genreIds = filterSet.genres,
+                    page = page
                 ).await()
             }
             if (response.isSuccessful) {

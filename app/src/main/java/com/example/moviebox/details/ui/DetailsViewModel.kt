@@ -1,65 +1,55 @@
 package com.example.moviebox.details.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moviebox._core.data.remote.model.MovieDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
 import com.example.moviebox._core.domain.LocalRepository
-import com.example.moviebox.details.domain.MovieDetailsUseCase
+import com.example.moviebox.details.domain.GetMovieDetailsUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
-    private val movieDetailsUseCase: MovieDetailsUseCase,
+    private val movieId: Long,
+    private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val localRepository: LocalRepository,
 ) : ViewModel() {
 
 
-    private val liveData = MutableLiveData<DetailsAppState>()
+    private var _viewState: MutableStateFlow<DetailsViewState> = MutableStateFlow(DetailsViewState.Empty)
+    val viewState: StateFlow<DetailsViewState> get() = _viewState.asStateFlow()
 
-    fun getLiveData(): LiveData<DetailsAppState> = liveData
+    init {
+        getMovieDetails()
+    }
 
     fun saveMovieToFavorite(movieData: MovieDetailsDTO) {
-        viewModelScope.launch {
-            localRepository.saveEntityToFavorite(convertMovieData(movieData))
-        }
+        //todo
     }
 
     fun saveMovieToWishlist(movieData: MovieDetailsDTO) {
-        viewModelScope.launch { localRepository.saveEntityToWishList(convertMovieData(movieData)) }
+        //todo
     }
 
     fun deleteMovieFromFavorite(movieData: MovieDetailsDTO) {
-        viewModelScope.launch { localRepository.deleteEntityFromFavorite(convertMovieData(movieData)) }
+        //todo
     }
 
     fun deleteMovieFromWishlist(movieData: MovieDetailsDTO) {
-        viewModelScope.launch { localRepository.deleteEntityFromWishList(convertMovieData(movieData)) }
+        //todo
     }
 
-    fun getMovieDetailsFromServer(movieId: Long) {
-        liveData.value = DetailsAppState.Loading
+    fun getMovieDetails() {
+        _viewState.value = DetailsViewState.Loading
         viewModelScope.launch {
-            movieDetailsUseCase(movieId = movieId)
+            getMovieDetailsUseCase(movieId = movieId)
                 .onFailure { error ->
-                    liveData.value = DetailsAppState.Error(error = error)
+                    _viewState.value = DetailsViewState.Error(error = error)
                 }
                 .onSuccess { data ->
-                    liveData.value = DetailsAppState.Success(movieData = data)
-                    localRepository.saveEntityToHistory(convertMovieData(data = data))
+                    _viewState.value = DetailsViewState.Success(movieData = data)
                 }
         }
-    }
-
-    private fun convertMovieData(data: MovieDetailsDTO): MovieDTO {
-        return MovieDTO(
-            data.id,
-            data.posterPath,
-            data.releaseDate,
-            data.title,
-            data.voteAverage,
-            data.adult
-        )
     }
 }

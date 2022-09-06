@@ -7,14 +7,12 @@ import com.example.moviebox._core.data.remote.model.MovieListDTO
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.util.concurrent.TimeUnit
 
 interface ApiService {
 
@@ -42,6 +40,7 @@ interface ApiService {
     /** Запрос отфильтрованного списка фильмов */
     @GET("discover/movie")
     fun getMovieListByFilterAsync(
+        @Query("page") page: Int,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("language") language: String = ApiUtils.LANG,
         @Query("sort_by") sortBy: String = ApiUtils.POPULARITY_SORT,
@@ -68,6 +67,7 @@ interface ApiService {
     /** Запрос на поиск фильма по названию */
     @GET("search/movie")
     fun getMovieListByPhraseAsync(
+        @Query("page") page: Int,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("language") language: String = ApiUtils.LANG,
         @Query("query") query: String,
@@ -81,7 +81,7 @@ interface ApiService {
         private const val BASE_URL_VERSION = "3/"
         private const val BASE_URL = "${BASE_URL_MAIN_PART}${BASE_URL_VERSION}"
 
-        fun newInstance(client: OkHttpClient): ApiService {
+        fun getInstance(client: OkHttpClient): ApiService {
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

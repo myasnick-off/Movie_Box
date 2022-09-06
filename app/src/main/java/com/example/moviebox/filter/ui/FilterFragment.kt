@@ -1,20 +1,21 @@
 package com.example.moviebox.filter.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.moviebox.R
+import com.example.moviebox._core.data.remote.model.GenreDTO
 import com.example.moviebox.databinding.FragmentFilterBinding
+import com.example.moviebox.filter.ui.model.FilterSet
+import com.example.moviebox.filter.ui.model.GenresAppState
+import com.example.moviebox.search.ui.SearchFragment
 import com.example.moviebox.utils.hide
+import com.example.moviebox.utils.navigateToFragment
 import com.example.moviebox.utils.show
 import com.example.moviebox.utils.showSnackBar
-import com.example.moviebox._core.ui.model.FilterSet
-import com.example.moviebox._core.data.remote.model.GenreDTO
-import com.example.moviebox.search.ui.SearchFragment
-import com.example.moviebox.utils.navigateToFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FilterFragment : Fragment() {
@@ -78,7 +79,7 @@ class FilterFragment : Fragment() {
 
         // обработчик нажатия на кнопку "Применить"
         applyButton.setOnClickListener {
-            navigateToFragment(SearchFragment.newInstance(filterSet = filterSet, hasAdult = withAdult))
+            navigateToFragment(SearchFragment.newInstance(filterSet = filterSet))
         }
 
         // слушатель ответа от диалогового окна выбора жанров
@@ -97,16 +98,16 @@ class FilterFragment : Fragment() {
     private fun renderData(appState: GenresAppState) = with(binding) {
         when (appState) {
             GenresAppState.Loading -> {
-                filterProgressBar.progressItem.show()
+                filterProgressBar.root.show()
                 filterGroup.hide()
             }
             is GenresAppState.Success -> {
-                filterProgressBar.progressItem.hide()
+                filterProgressBar.root.hide()
                 filterGroup.show()
                 genres = appState.genreData
             }
             is GenresAppState.Error -> {
-                filterProgressBar.progressItem.hide()
+                filterProgressBar.root.hide()
                 filterMain.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload)
@@ -137,13 +138,8 @@ class FilterFragment : Fragment() {
     }
 
     companion object {
-        private const val ARG_WITH_ADULT = "WITH_ADULT"
+        private const val ARG_WITH_ADULT = "with_adult"
 
-        fun newInstance(withAdult: Boolean) = FilterFragment()
-            .apply {
-                arguments = Bundle().apply {
-                    putBoolean(ARG_WITH_ADULT, withAdult)
-                }
-            }
+        fun newInstance() = FilterFragment()
     }
 }

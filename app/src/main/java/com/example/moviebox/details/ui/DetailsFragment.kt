@@ -4,33 +4,36 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.example.moviebox.R
-import com.example.moviebox.databinding.DetailsFragmentBinding
-import com.example.moviebox.utils.hide
-import com.example.moviebox.utils.show
-import com.example.moviebox.utils.showSnackBar
 import com.example.moviebox._core.data.remote.ApiUtils
 import com.example.moviebox._core.data.remote.model.GenreDTO
 import com.example.moviebox._core.data.remote.model.MovieDetailsDTO
-import com.example.moviebox.contacts.ui.ContactsFragment
+import com.example.moviebox.databinding.DetailsFragmentBinding
+import com.example.moviebox.details.domain.model.MovieDetails
+import com.example.moviebox.utils.hide
+import com.example.moviebox.utils.show
+import com.example.moviebox.utils.showSnackBar
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class DetailsFragment : Fragment() {
 
-    private val viewModel: DetailsViewModel by viewModel()
-    private val localViewModel: LocalDataViewModel by viewModel()
+    private val movieId: Long? by lazy {
+        requireArguments().getLong(ARG_MOVIE_ID)
+    }
+
+    private val viewModel: DetailsViewModel by viewModel() { parametersOf(movieId)}
 
     private var _binding: DetailsFragmentBinding? = null
     private val binding get() = _binding!!
-
-    private var movieId: Long? = null
-    private var inFavorite: Boolean = false
-    private var inWishlist: Boolean = false
-    private lateinit var movieData: MovieDetailsDTO
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,92 +46,9 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        movieId = arguments?.getLong(ARG_MOVIE_ID)
-
-        val observer = Observer<DetailsAppState> { renderData(it) }
-        viewModel.getLiveData().observe(viewLifecycleOwner, observer)
-        movieId?.let { viewModel.getMovieDetailsFromServer(it) }
-
-        val localObserver = Observer<LocalDataAppState> { renderCheck(it) }
-        localViewModel.getLiveData().observe(viewLifecycleOwner, localObserver)
-        movieId?.let { localViewModel.checkInLocalDB(it) }
-
-        // обработка события по нажатию кнопок меню
-        binding.detailsToolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_favorite -> {
-                    if (inFavorite) {
-                        viewModel.deleteMovieFromFavorite(movieData)
-                        it.setIcon(R.drawable.ic_baseline_favorite_border_24)
-                    } else {
-                        viewModel.saveMovieToFavorite(movieData)
-                        it.setIcon(R.drawable.ic_baseline_favorite_24)
-                    }
-                    movieId?.let { localViewModel.checkInLocalDB(movieId!!) }
-                    true
-                }
-                R.id.action_wishlist -> {
-                    if (inWishlist) {
-                        viewModel.deleteMovieFromWishlist(movieData)
-                        it.setIcon(R.drawable.ic_baseline_bookmark_border_24)
-                    } else {
-                        viewModel.saveMovieToWishlist(movieData)
-                        it.setIcon(R.drawable.ic_baseline_bookmark_24)
-                    }
-                    movieId?.let { localViewModel.checkInLocalDB(movieId!!) }
-                    true
-                }
-                R.id.action_share -> {
-                    val bundle = Bundle().apply { putParcelable(KEY_DETAILS, movieData) }
-                    activity?.supportFragmentManager?.beginTransaction()
-                        ?.add(R.id.container, ContactsFragment.newInstance(bundle))
-                        ?.addToBackStack("ContactsFragment")
-                        ?.commit()
-                    true
-                }
-                else -> false
-            }
-        }
-    }
-
-    private fun renderCheck(appState: LocalDataAppState?) = with(binding) {
-        when (appState) {
-            is LocalDataAppState.Loading -> detailsProgressBar.show()
-            is LocalDataAppState.Success -> {
-                inFavorite = appState.hasMovie[0]
-                inWishlist = appState.hasMovie[1]
-                if (inFavorite) {
-                    detailsToolbar.menu.findItem(R.id.action_favorite)
-                        .setIcon(R.drawable.ic_baseline_favorite_24)
-                }
-                if (inWishlist) {
-                    detailsToolbar.menu.findItem(R.id.action_wishlist)
-                        .setIcon(R.drawable.ic_baseline_bookmark_24)
-                }
-                detailsProgressBar.hide()
-            }
-            else -> detailsProgressBar.hide()
-        }
-    }
-
-    private fun renderData(appState: DetailsAppState) = with(binding) {
-        when (appState) {
-            DetailsAppState.Loading -> detailsProgressBar.show()
-            // при успешной загрузке фильма:
-            is DetailsAppState.Success -> {
-                movieData = appState.movieData
-                // заполняем фрагмент данными фильма
-                setData(movieData)
-                detailsProgressBar.hide()
-            }
-            is DetailsAppState.Error -> {
-                detailsProgressBar.hide()
-                detailsLayout.showSnackBar(
-                    getString(R.string.error),
-                    getString(R.string.reload)
-                ) { movieId?.let { movieId -> viewModel.getMovieDetailsFromServer(movieId) } }
-            }
-        }
+        setHasOptionsMenu(true)
+        initView()
+        initViewModel()
     }
 
     override fun onDestroyView() {
@@ -136,33 +56,74 @@ class DetailsFragment : Fragment() {
         _binding = null
     }
 
-    private fun setData(movieData: MovieDetailsDTO) = with(binding) {
-        textTitle.text = movieData.title
-        textRating.text = movieData.voteAverage.toString()
-        textDate.text = movieData.releaseDate
-        textGenresList.text = genreListToString(movieData.genres)
-        textDetails.text = movieData.overview
-        ratingBar.rating = movieData.voteAverage.toFloat() / 2
+    private fun initView() = with(binding) {
+        detailsToolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_favorite -> {
+                    true
+                }
+                R.id.action_wishlist -> {
 
-        // загрузка картинки из Интернета по ее url
-        val posterUrl = ApiUtils.POSTER_BASE_URL + ApiUtils.POSTER_SIZE_M + movieData.posterPath
-        imgPoster.load(posterUrl)
-
-// Другие способы загрузки изображений
-//        Glide.with(root).load(posterUrl).into(imgPoster)
-//        Picasso
-//            .get()
-//            .load(posterUrl)
-//            .into(imgPoster)
-
-        detailsGroup.show()
-        if (!movieData.adult) imageAdult.hide()
+                    true
+                }
+                R.id.action_share -> {
+                    //navigateToFragment(fragment = ContactsFragment.newInstance(movieData))
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
-    private fun genreListToString(genres: List<GenreDTO>): String {
+    private fun initViewModel() {
+        viewModel.viewState.onEach { renderData(it) }.launchIn(lifecycleScope)
+    }
+
+    private fun renderData(appState: DetailsViewState) = with(binding) {
+        when (appState) {
+            DetailsViewState.Empty -> {
+                detailsLoader.hide()
+                detailsLayout.hide()
+            }
+            DetailsViewState.Loading -> {
+                detailsLoader.show()
+                detailsLayout.hide()
+            }
+            is DetailsViewState.Success -> {
+                detailsLoader.hide()
+                detailsLayout.show()
+                setData(data = appState.movieData)
+            }
+            is DetailsViewState.Error -> {
+                detailsLoader.hide()
+                detailsLayout.hide()
+                detailsLayout.showSnackBar(
+                    getString(R.string.error),
+                    getString(R.string.reload)
+                ) { movieId?.let { viewModel.getMovieDetails() } }
+            }
+        }
+    }
+
+    private fun setData(data: MovieDetails) = with(binding) {
+        movieTitle.text = data.title
+        movieRating.text = String.format("%.1f", data.voteAverage)
+        releaseDate.text = data.releaseDate
+        movieGenres.text = genreListToString(data.genres)
+        movieCountries.text = genreListToString(data.countries)
+        movieCompanies.text = genreListToString(data.companies)
+        textDetails.text = data.overview
+        ratingBar.rating = data.voteAverage.toFloat() / 2
+        imageAdult.isVisible = data.adult
+        // загрузка картинки из Интернета по ее url
+        val posterUrl = ApiUtils.POSTER_BASE_URL + ApiUtils.POSTER_SIZE_M + data.posterPath
+        imgPoster.load(posterUrl)
+    }
+
+    private fun genreListToString(genres: List<String>): String {
         val result = StringBuilder()
         for (genre in genres) {
-            result.append(genre.name)
+            result.append(genre)
             if (genre != genres.last()) {
                 result.append(", ")
             }
@@ -172,7 +133,6 @@ class DetailsFragment : Fragment() {
 
     companion object {
         const val ARG_MOVIE_ID = "movie_id"
-        const val KEY_DETAILS = "movie_details"
 
         fun newInstance(movieId: Long) =
             DetailsFragment().apply {

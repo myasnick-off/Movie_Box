@@ -7,7 +7,7 @@ object OkHttpClient {
 
     private const val TIMEOUT_SEC = 10L
 
-    fun newInstance(): OkHttpClient {
+    fun getInstance(): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         httpClient.connectTimeout(TIMEOUT_SEC, TimeUnit.SECONDS)
         httpClient.readTimeout(TIMEOUT_SEC, TimeUnit.SECONDS)

@@ -20,24 +20,24 @@ class TabViewModel: ViewModel(), KoinComponent {
     fun getAllHistory() {
         liveData.value = ProfileAppState.Loading
         viewModelScope.launch {
-            val movieList = localRepository.getAllHistory()
-            liveData.postValue(ProfileAppState.Success(movieList))
+//            val movieList = localRepository.getAllLocalData()
+//            liveData.postValue(ProfileAppState.Success(movieList))
         }
     }
 
     fun getAllFavorite() {
         liveData.value = ProfileAppState.Loading
         viewModelScope.launch {
-            val movieList = localRepository.getAllFavorite()
-            liveData.postValue(ProfileAppState.Success(movieList))
+//            val movieList = localRepository.getAllFavorite()
+//            liveData.postValue(ProfileAppState.Success(movieList))
         }
     }
 
     fun getAllWishlist() {
         liveData.value = ProfileAppState.Loading
         viewModelScope.launch {
-            val movieList = localRepository.getAllWishList()
-            liveData.postValue(ProfileAppState.Success(movieList))
+//            val movieList = localRepository.getAllWishList()
+//            liveData.postValue(ProfileAppState.Success(movieList))
         }.start()
     }
 
@@ -45,8 +45,8 @@ class TabViewModel: ViewModel(), KoinComponent {
         liveData.value = ProfileAppState.Loading
         viewModelScope.launch {
             localRepository.deleteEntityFromHistory(movie)
-            val movieList = localRepository.getAllHistory()
-            liveData.postValue(ProfileAppState.Success(movieList))
+//            val movieList = localRepository.getAllLocalData()
+//            liveData.postValue(ProfileAppState.Success(movieList))
         }
     }
 
@@ -54,8 +54,8 @@ class TabViewModel: ViewModel(), KoinComponent {
         liveData.value = ProfileAppState.Loading
         viewModelScope.launch {
             localRepository.deleteEntityFromFavorite(movie)
-            val movieList = localRepository.getAllFavorite()
-            liveData.postValue(ProfileAppState.Success(movieList))
+//            val movieList = localRepository.getAllFavorite()
+//            liveData.postValue(ProfileAppState.Success(movieList))
         }
     }
 
@@ -63,8 +63,8 @@ class TabViewModel: ViewModel(), KoinComponent {
         liveData.value = ProfileAppState.Loading
         viewModelScope.launch {
             localRepository.deleteEntityFromWishList(movie)
-            val movieList = localRepository.getAllWishList()
-            liveData.postValue(ProfileAppState.Success(movieList))
+//            val movieList = localRepository.getAllWishList()
+//            liveData.postValue(ProfileAppState.Success(movieList))
         }
     }
 

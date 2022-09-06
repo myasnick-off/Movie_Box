@@ -12,9 +12,9 @@ import coil.load
 import com.example.moviebox.R
 import com.example.moviebox._core.data.remote.ApiUtils
 import com.example.moviebox._core.data.remote.model.MovieDTO
-import com.example.moviebox._core.ui.OnItemViewClickListener
+import com.example.moviebox._core.ui.ItemClickListener
 
-class TabRecyclerAdapter(private val itemViewClickListener: OnItemViewClickListener) :
+class TabRecyclerAdapter(private val itemClickListener: ItemClickListener) :
     ListAdapter<MovieDTO, TabRecyclerAdapter.TabViewHolder>(DiffCallback()) {
 
     private class DiffCallback: DiffUtil.ItemCallback<MovieDTO>() {
@@ -30,7 +30,7 @@ class TabRecyclerAdapter(private val itemViewClickListener: OnItemViewClickListe
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TabViewHolder {
         val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.inner_recycler_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_sublist_movie, parent, false)
         return TabViewHolder(itemView)
     }
 
@@ -51,10 +51,10 @@ class TabRecyclerAdapter(private val itemViewClickListener: OnItemViewClickListe
                 val posterUrl = ApiUtils.POSTER_BASE_URL + ApiUtils.POSTER_SIZE_S + movie.posterPath
                 itemView.findViewById<ImageView>(R.id.item_movie_poster).load(posterUrl)
 
-                itemView.setOnClickListener { itemViewClickListener.onItemClicked(movie.id) }
+                itemView.setOnClickListener { itemClickListener.onItemClicked(movie.id) }
 
                 itemView.setOnLongClickListener {
-                    itemViewClickListener.onItemLongClicked(movie, itemView)
+                    itemClickListener.onItemLongClicked(movie, itemView)
                     true
                 }
             }
