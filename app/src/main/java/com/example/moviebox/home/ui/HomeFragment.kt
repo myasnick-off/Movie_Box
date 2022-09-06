@@ -107,7 +107,7 @@ class HomeFragment : Fragment() {
         mainToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_filter -> {
-                    navigateToFragment(fragment = FilterFragment.newInstance())
+//                    navigateToFragment(fragment = FilterFragment.newInstance())
                     true
                 }
                 else -> false

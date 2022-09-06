@@ -12,7 +12,7 @@ class DtoToUiMapper {
         return MovieItem(
             id = movieDto.id,
             genreIds = movieDto.genreIds,
-            posterPath = movieDto.posterPath,
+            posterPath = movieDto.posterPath.orEmpty(),
             releaseDate = movieDto.releaseDate,
             title = movieDto.title,
             voteAverage = movieDto.voteAverage,

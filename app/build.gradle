@@ -20,15 +20,15 @@ android {
     }
 
     signingConfigs {
-        /*release {
-            Properties passProperties = new Properties()
+        release {
+            /*Properties passProperties = new Properties()
             passProperties.load(project.rootProject.file("passwords.properties").newDataInputStream())
 
             storeFile file("movie_box_keys.jks")
             storePassword  passProperties['store_password']
             keyAlias 'key0'
-            keyPassword  passProperties['key_password']
-        }*/
+            keyPassword  passProperties['key_password']*/
+        }
     }
 
     buildTypes.each {
