@@ -74,4 +74,6 @@
     <string name="war">Военный</string>
     <string name="western">Вестерн</string>
     <string name="more_films">Еще…</string>
+    <string name="countries">Страны:</string>
+    <string name="companies">Кинокомпании:</string>
 </resources>

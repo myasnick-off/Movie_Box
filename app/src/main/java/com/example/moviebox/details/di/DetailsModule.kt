@@ -10,6 +10,6 @@ import org.koin.dsl.module
 val detailsModule = module {
     factory { MovieDetailsMapper() }
     factory { MovieEntityMapper() }
-    factory { GetMovieDetailsUseCase(remoteRepository = get(), localRepository = get(), entityMapper = get(), mapper = get()) }
+    factory { GetMovieDetailsUseCase(remoteRepository = get(), mapper = get()) }
     viewModel { (movieId: Long) -> DetailsViewModel(movieId = movieId, localRepository = get(), getMovieDetailsUseCase = get()) }
 }

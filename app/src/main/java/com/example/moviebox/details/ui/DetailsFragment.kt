@@ -73,22 +73,6 @@ class DetailsFragment : Fragment() {
                 else -> false
             }
         }
-        // анимация при скроллинге ListView
-        detailsLayout.setOnScrollChangeListener { _, _, _, _, _ ->
-            val params = detailsLayout.layoutParams as CoordinatorLayout.LayoutParams
-            // постепенно убираем верхний отступ у ListView при его скроллинге вниз
-            if (detailsLayout.canScrollVertically(+1) && params.topMargin >= 0) {
-                params.topMargin -= 2
-                detailsLayout.layoutParams = params
-            }
-            // возвращаем верхний отступ у ListView при завершении скролинга вверх
-            if (!detailsLayout.canScrollVertically(-1)) {
-                params.topMargin = 60
-                detailsLayout.layoutParams = params
-            }
-            // добавляем тень у AppBar, когда элеиенты ListView при скроллинге заезжают под него
-            detailsAppbar.isSelected = detailsLayout.canScrollVertically(-1)
-        }
     }
 
     private fun initViewModel() {
@@ -123,9 +107,11 @@ class DetailsFragment : Fragment() {
 
     private fun setData(data: MovieDetails) = with(binding) {
         movieTitle.text = data.title
-        movieRating.text = data.voteAverage.toString()
+        movieRating.text = String.format("%.1f", data.voteAverage)
         releaseDate.text = data.releaseDate
         movieGenres.text = genreListToString(data.genres)
+        movieCountries.text = genreListToString(data.countries)
+        movieCompanies.text = genreListToString(data.companies)
         textDetails.text = data.overview
         ratingBar.rating = data.voteAverage.toFloat() / 2
         imageAdult.isVisible = data.adult

@@ -25,21 +25,19 @@ class DetailsViewModel(
     }
 
     fun saveMovieToFavorite(movieData: MovieDetailsDTO) {
-        viewModelScope.launch {
-//            localRepository.saveEntityToFavorite(convertMovieData(movieData))
-        }
+        //todo
     }
 
     fun saveMovieToWishlist(movieData: MovieDetailsDTO) {
-//        viewModelScope.launch { localRepository.saveEntityToWishList(convertMovieData(movieData)) }
+        //todo
     }
 
     fun deleteMovieFromFavorite(movieData: MovieDetailsDTO) {
-        //viewModelScope.launch { localRepository.deleteEntityFromFavorite(convertMovieData(movieData)) }
+        //todo
     }
 
     fun deleteMovieFromWishlist(movieData: MovieDetailsDTO) {
-        //viewModelScope.launch { localRepository.deleteEntityFromWishList(convertMovieData(movieData)) }
+        //todo
     }
 
     fun getMovieDetails() {

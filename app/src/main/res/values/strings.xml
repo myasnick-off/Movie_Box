@@ -89,6 +89,8 @@
     <string name="war">War</string>
     <string name="western">Western</string>
     <string name="more_films">More…</string>
+    <string name="countries">Countries:</string>
+    <string name="companies">Companies:</string>
     <array name="initial_range_values">
         <item>1920.0</item>
         <item>2022.0</item>
